@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكانك - سوق الرياض</title>
+<meta name="theme-color" content="#0A0A0A">
+<style>
+:root{--bg:#0A0A0A;--card:#161616;--neon:#00FF88;--text:#fff;--muted:#888}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,Tajawal,sans-serif}
+body{background:var(--bg);color:var(--text);padding-bottom:80px}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);z-index:10;border-bottom:1px solid #222}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px}
+.logo-icon{width:32px;height:32px;background:#00FF88;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:900}
+.search{margin:12px 16px;background:#161616;border-radius:14px;display:flex;padding:12px 16px;border:1px solid #222}
+.search input{flex:1;background:transparent;border:0;color:white;outline:0;font-size:15px;min-width:0}
+.cats{display:flex;gap:8px;overflow:auto;padding:0 16px 12px}
+.cat{background:#161616;border:1px solid #222;padding:10px 18px;border-radius:30px;font-size:13px;white-space:nowrap;cursor:pointer}
+.cat.active{background:#00FF88;color:#000;border-color:#00FF88;font-weight:700}
+.banner{margin:12px 16px;background:linear-gradient(135deg,#00FF88 0%,#00CC6A 100%);border-radius:20px;padding:18px;color:#000;display:flex;justify-content:space-between;align-items:center}
+.grid{padding:0 12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#161616;border-radius:18px;overflow:hidden;border:1px solid #222;position:relative}
+.card img{width:100%;aspect-ratio:1.1;object-fit:cover}
+.badge{position:absolute;top:8px;right:8px;background:#00FF88;color:#000;font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px}
+.info{padding:10px}
+.price{color:#00FF88;font-weight:800;font-size:16px}
+.title{font-size:12px;margin-top:4px;color:#ccc;line-height:1.5;min-height:32px}
+.loc{font-size:10px;color:#888;margin-top:4px}
+.btn{width:100%;margin-top:8px;background:transparent;border:1px solid #00FF88;color:#00FF88;padding:8px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0 20px;z-index:10}
+.nav-item{text-align:center;font-size:10px;color:#888;cursor:pointer}
+.nav-item.active{color:#00FF88}
+.tier{display:flex;justify-content:space-between;gap:8px;padding:12px;border:1px dashed #333;border-radius:12px;margin-bottom:8px;font-size:13px}
+.empty{grid-column:1/-1;text-align:center;color:#888;padding:30px 10px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr);max-width:1100px;margin:auto}.banner,.search{max-width:1060px;margin-left:auto;margin-right:auto}.cats{justify-content:center}}
+</style>
+</head>
+<body>
+<header><div class="logo"><div class="logo-icon">م</div> مكانك</div><div aria-label="القائمة">☰</div></header>
+<div class="search"><input id="searchInput" placeholder="دور على سيارة، شقة، وظيفة..." aria-label="البحث"><span>🔍</span></div>
+<div class="cats" id="categories">
+  <div class="cat active" data-cat="الكل">الكل</div><div class="cat" data-cat="سيارات">🚗 سيارات</div><div class="cat" data-cat="عقار">🏠 عقار</div><div class="cat" data-cat="جوالات">📱 جوالات</div><div class="cat" data-cat="وظائف">💼 وظائف</div><div class="cat" data-cat="أثاث">🛋️ أثاث</div>
+</div>
+<div class="banner"><div><b style="font-size:18px">إعلانك في مكانك</b><br><small style="font-weight:600">يوصل لآلاف في الرياض خلال ساعات</small></div><div style="font-size:36px">⚡</div></div>
+<div style="margin:16px;background:#161616;border-radius:20px;padding:16px;border:1px solid #222"><h3 style="margin-bottom:12px">💰 باقات النشر</h3><div class="tier"><span>بوست عادي</span><b style="color:#00FF88">150 ر.س</b></div><div class="tier" style="border-color:#00FF88;background:rgba(0,255,136,0.05)"><span>⭐ مثبت 24 ساعة + واتساب</span><b style="color:#00FF88">350 ر.س</b></div><div class="tier"><span>🔥 ستوري + بوست + تثبيت</span><b style="color:#00FF88">450 ر.س</b></div><small style="color:#888">الأسعار للعرض فقط، ولا يوجد دفع إلكتروني مفعّل في هذه النسخة.</small></div>
+<div class="grid" id="grid"></div>
+<div class="nav"><div class="nav-item active" data-nav="الرئيسية"><div>🏠</div>الرئيسية</div><div class="nav-item" data-nav="بحث"><div>🔍</div>بحث</div><div class="nav-item" data-nav="أضف إعلان"><div style="background:#00FF88;color:#000;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 2px;font-size:20px">+</div>أضف إعلان</div><div class="nav-item" data-nav="رسائل"><div>💬</div>رسائل</div><div class="nav-item" data-nav="حسابي"><div>👤</div>حسابي</div></div>
+<script>
+const ads=[
+{cat:"سيارات",title:"كامري 2020 بودي وكالة ممشى 90",price:"65,000 ر.س",old:"72,000",img:"https://images.unsplash.com/photo-1550355291-bbee04a92027?w=600",loc:"الملقا - الرياض"},
+{cat:"عقار",title:"شقة 3 غرف حي النرجس جديدة",price:"28,000 ر.س / سنوي",img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600",loc:"النرجس - الرياض"},
+{cat:"جوالات",title:"ايفون 15 برو ماكس 256 تيتانيوم",price:"4,200 ر.س",old:"5,200",img:"https://images.unsplash.com/photo-1592899677977-9bb10ba128a5?w=600",loc:"العليا - الرياض"},
+{cat:"أثاث",title:"كنب L يكفي 7 نظيف جدا",price:"1,200 ر.س",old:"2,000",img:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",loc:"السويدي - الرياض"},
+{cat:"وظائف",title:"مطلوب كاشير مطعم راتب 4000",price:"وظيفة",img:"https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=600",loc:"الرياض"},
+{cat:"عقار",title:"استراحة قسمين مسبح للإيجار",price:"800 ر.س / يوم",old:"1,000",img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600",loc:"بنبان - الرياض"}
+];
+let selectedCat="الكل";
+const grid=document.getElementById("grid");
+const searchInput=document.getElementById("searchInput");
+function renderAds(){
+ const q=searchInput.value.trim().toLowerCase();
+ const filtered=ads.filter(a=>(selectedCat==="الكل"||a.cat===selectedCat)&&(`${a.title} ${a.loc} ${a.price} ${a.cat}`).toLowerCase().includes(q));
+ if(!filtered.length){grid.innerHTML='<div class="empty">مفيش إعلانات مطابقة للبحث.</div>';return;}
+ grid.innerHTML=filtered.map(a=>`<div class="card">${a.old?'<span class="badge">خصم</span>':''}<img src="${a.img}" alt="${a.title}" loading="lazy"><div class="info"><div class="price">${a.price}</div><div class="title">${a.title}</div><div class="loc">📍 ${a.loc}</div><button class="btn" data-title="${a.title.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" data-loc="${a.loc}">تواصل</button></div></div>`).join("");
+ grid.querySelectorAll("button[data-title]").forEach(btn=>btn.addEventListener("click",()=>alert("هذه نسخة تجريبية. أضف رقم واتساب حقيقيًا لربط التواصل.\nالإعلان: "+btn.dataset.title)));
+}
+document.getElementById("categories").querySelectorAll(".cat").forEach(el=>el.addEventListener("click",()=>{
+ selectedCat=el.dataset.cat;
+ document.querySelectorAll(".cat").forEach(c=>c.classList.toggle("active",c===el));
+ renderAds();
+}));
+searchInput.addEventListener("input",renderAds);
+document.querySelectorAll(".nav-item").forEach(el=>el.addEventListener("click",()=>{
+ const name=el.dataset.nav;
+ if(name==="بحث"){searchInput.focus();window.scrollTo({top:0,behavior:"smooth"});}
+ else if(name==="أضف إعلان"){alert("إضافة الإعلانات تحتاج إلى نموذج وقاعدة بيانات في النسخة الكاملة.");}
+ else if(name==="رسائل"){alert("قسم الرسائل غير مفعّل في هذه النسخة التجريبية.");}
+ else if(name==="حسابي"){alert("تسجيل الدخول والحساب الشخصي غير مفعّلين في هذه النسخة التجريبية.");}
+ else {window.scrollTo({top:0,behavior:"smooth"});}
+}));
+renderAds();
+</script>
+</body>
+</html>
