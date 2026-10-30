@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكانك</title>
+<style>
+:root{--bg:#0A0A0A;--card:#161616;--border:#242424;--green:#00FF88;--blue:#3B82F6;--gray:#888}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:var(--bg);color:#fff;padding-bottom:85px}
+header{position:sticky;top:0;z-index:100;background:#161616f2;backdrop-filter:blur(10px);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px}
+.logo-icon{width:34px;height:34px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#000}
+.icon-btn{width:38px;height:38px;background:#222;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.search-wrap{margin:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;gap:10px}
+.search-wrap input{flex:1;background:transparent;border:0;color:#fff;outline:none}
+.cats{display:flex;gap:8px;overflow:auto;padding:0 16px 10px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{white-space:nowrap;background:var(--card);border:1px solid var(--border);padding:9px 18px;border-radius:22px;font-size:14px;cursor:pointer}
+.cat.active{background:var(--green);color:#000;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;position:relative}
+.card img{width:100%;height:140px;object-fit:cover}
+.card .info{padding:10px}
+.card .title{font-size:13px;height:34px;overflow:hidden;line-height:1.3}
+.card .price{color:var(--green);font-weight:900;margin-top:6px}
+.card .meta{color:var(--gray);font-size:11px;margin-top:4px}
+.fav-btn{position:absolute;top:8px;left:8px;width:32px;height:32px;background:rgba(0,0,0,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
+.fav-btn.active{color:#ff3b30}
+
+#detailScreen{position:fixed;inset:0;background:#0A0A0A;z-index:9997;display:none;overflow:auto;padding-bottom:90px}
+.detail-img-wrap{position:relative;width:100%;height:300px;background:#111}
+.detail-img-wrap img{width:100%;height:100%;object-fit:cover}
+.detail-back{position:absolute;top:12px;right:12px;width:36px;height:36px;background:rgba(0,0,0,0.6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
+.detail-content{background:var(--card);margin:-20px 0 0;border-radius:24px 24px 0 0;padding:20px;position:relative;border-top:1px solid var(--border)}
+.detail-title{font-size:18px;font-weight:800}
+.detail-price{font-size:22px;font-weight:900;color:var(--green);margin:12px 0}
+.detail-meta{display:flex;gap:12px;color:var(--gray);font-size:13px;margin-bottom:16px}
+.detail-desc{background:#1E1E1E;border:1px solid var(--border);border-radius:12px;padding:14px;font-size:14px;line-height:1.6;color:#ccc;margin-bottom:16px}
+.detail-actions{display:flex;gap:10px}
+.btn-wa{flex:1;background:#25D366;color:#fff;border:0;padding:14px;border-radius:12px;font-weight:800;cursor:pointer}
+.btn-chat{flex:1;background:var(--blue);color:#fff;border:0;padding:14px;border-radius:12px;font-weight:800;cursor:pointer}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;align-items:center;padding:6px 0 10px;z-index:999}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#666;font-size:11px;flex:1}
+.nav-item.active{color:var(--blue)}
+.nav-item .nav-icon{font-size:22px}
+.plus-btn{width:56px;height:56px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;margin-top:-18px;border:3px solid #0A0A0A;box-shadow:0 4px 12px rgba(59,130,246,0.4)}
+
+#loginScreen{position:fixed;inset:0;background:#0A0A0A;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--card);width:100%;max-width:380px;padding:28px;border-radius:20px;border:1px solid var(--border);text-align:center}
+.login-box input{width:100%;padding:14px 16px;margin-bottom:12px;border-radius:12px;border:1px solid var(--border);background:#1E1E1E;color:#fff;outline:none}
+.login-box button{width:100%;padding:14px;background:var(--green);border:0;border-radius:12px;font-weight:900;color:#000;cursor:pointer}
+.code{font-size:32px;font-weight:900;color:var(--green);letter-spacing:6px;margin:10px 0}
+
+#profileScreen,#addScreen,#favScreen,#msgScreen,#notifScreen,#chatScreen{position:fixed;inset:0;background:#0A0A0A;z-index:9998;display:none;overflow:auto;padding-bottom:80px}
+.profile-header{padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:10}
+.profile-header button{background:#222;border:1px solid var(--border);color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer}
+.avatar{width:80px;height:80px;background:linear-gradient(135deg,#00FF88,#00CC6A);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#000;margin:20px auto 12px}
+.profile-box,.add-box{background:var(--card);margin:12px 16px;border-radius:16px;border:1px solid var(--border);padding:16px}
+.profile-box input,.add-box input,.add-box select,.add-box textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#1E1E1E;color:#fff;margin-bottom:10px;outline:none}
+.upload-area{border:2px dashed #333;border-radius:14px;padding:20px;text-align:center;background:#1E1E1E;cursor:pointer}
+#previewImg{width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:10px;display:none}
+.btn-green{width:100%;padding:13px;background:var(--green);border:0;border-radius:12px;font-weight:800;color:#000;margin-top:6px;cursor:pointer}
+.btn-dark{width:100%;padding:13px;background:#222;border:1px solid var(--border);border-radius:12px;color:#ff5a5a;margin-top:10px;font-weight:700;cursor:pointer}
+.chat-box{display:flex;flex-direction:column;gap:10px;padding:16px}
+.msg{max-width:75%;padding:10px 14px;border-radius:14px;font-size:14px}
+.msg.me{align-self:flex-end;background:var(--blue);color:#fff;border-radius:14px 14px 2px 14px}
+.msg.other{align-self:flex-start;background:var(--card);border:1px solid var(--border);color:#fff;border-radius:14px 14px 14px 2px}
+.chat-input{display:flex;gap:8px;padding:12px;background:var(--card);border-top:1px solid var(--border);position:sticky;bottom:0}
+.chat-input input{flex:1;padding:12px;border-radius:22px;border:1px solid var(--border);background:#1E1E1E;color:#fff;outline:none}
+.chat-input button{width:44px;height:44px;background:var(--blue);border:0;border-radius:50%;color:#fff;font-size:18px;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="loginScreen"><div class="login-box"><div class="logo" style="justify-content:center;margin-bottom:12px"><div class="logo-icon">م</div> مكانك</div><h2>مرحبا في مكانك</h2><p style="color:#888;font-size:13px;margin:8px 0 20px">سجل دخولك عشان تشوف الاعلانات</p><div id="step1"><input id="userName" placeholder="اسمك الكامل"><input id="userPhone" placeholder="رقم التليفون"><input id="userEmail" type="email" placeholder="الايميل"><button onclick="sendCode()">ارسال كود التحقق</button></div><div id="step2" style="display:none"><p style="color:#888;font-size:13px">كود التحقق</p><div class="code" id="showCode">------</div><input id="codeInput" placeholder="اكتب الكود هنا"><button onclick="verifyCode()">تأكيد ودخول الموقع</button></div></div></div>
+
+<div id="profileScreen">
+  <div class="profile-header"><button onclick="closeAll()">✕</button><b>البروفايل</b></div>
+  <div class="avatar" id="avatarLetter">م</div>
+  <h3 id="profileName" style="text-align:center;margin-bottom:4px"></h3>
+  <p style="text-align:center;color:#888;font-size:13px;margin-bottom:16px">عضو منذ اليوم</p>
+  <div class="profile-box">
+    <p style="font-weight:700;margin-bottom:12px">بياناتك الحالية:</p>
+    <p id="pName" style="margin:6px 0"></p>
+    <p id="pPhone" style="margin:6px 0;direction:ltr;text-align:right"></p>
+    <p id="pEmail" style="margin:6px 0;direction:ltr;text-align:right"></p>
+    <hr style="border:0;border-top:1px solid #222;margin:14px 0">
+    <p style="font-weight:700;margin-bottom:10px">تعديل البيانات:</p>
+    <input id="editName" placeholder="الاسم الجديد">
+    <input id="editPhone" placeholder="التليفون الجديد">
+    <input id="editEmail" placeholder="الايميل الجديد">
+    <button class="btn-green" onclick="saveProfile()">حفظ التعديلات ✅</button>
+    <button class="btn-dark" onclick="logout()">تسجيل خروج</button>
+    <button class="btn-green" style="background:#222;color:#fff;border:1px solid #333;margin-top:10px" onclick="closeAll()">اغلاق</button>
+  </div>
+</div>
+
+<div id="detailScreen"><div class="detail-img-wrap"><img id="detailImg" src=""><div class="detail-back" onclick="closeDetail()">✕</div></div><div class="detail-content"><div class="detail-title" id="detailTitle"></div><div class="detail-price" id="detailPrice"></div><div class="detail-meta"><span id="detailCat"></span><span>•</span><span id="detailCity"></span><span>•</span><span>اليوم</span></div><div class="detail-desc" id="detailDesc"></div><div class="detail-actions"><button class="btn-chat" onclick="startPrivateChat()">💬 تواصل خاص</button><button class="btn-wa" onclick="openWhatsApp()">🟢 واتساب</button></div></div></div>
+<div id="chatScreen"><div class="profile-header"><button onclick="closeChat()">✕</button><b id="chatWith">محادثة خاصة</b></div><div class="chat-box" id="chatBox"></div><div class="chat-input"><input id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendMsg()"><button onclick="sendMsg()">➤</button></div></div>
+<div id="addScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>اضف اعلان جديد</b></div><div class="add-box"><input id="adTitle" placeholder="عنوان الاعلان *"><select id="adCat"><option value="شقق">شقق</option><option value="سيارات">سيارات</option><option value="موبايلات" selected>موبايلات</option><option value="أثاث">أثاث</option><option value="وظائف">وظائف</option><option value="خدمات">خدمات</option><option value="أخرى">أخرى</option></select><input id="adPrice" placeholder="السعر *"><input id="adCity" placeholder="المدينة"><input id="adPhone" placeholder="رقم الواتساب *"><label>صورة الاعلان *</label><input type="file" id="adImgFile" accept="image/*" style="display:none" onchange="handleImage(this)"><div class="upload-area" onclick="document.getElementById('adImgFile').click()"><div style="font-size:32px">📸</div><p style="color:#888;font-size:13px">اضغط لاختيار صورة من معرض الصور</p><b style="color:var(--green)">اختر من المعرض</b></div><img id="previewImg"><textarea id="adDesc" rows="3" placeholder="الوصف"></textarea><button class="btn-green" onclick="publishAd()">نشر الان 🚀</button></div></div>
+<div id="favScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>المفضلة</b></div><div class="grid" id="favGrid" style="margin-top:12px"></div><div id="favEmpty" style="text-align:center;padding:40px;color:#666">❤️ لا يوجد مفضلة بعد</div></div>
+<div id="msgScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>الرسائل</b></div><div id="msgList" style="padding:12px"></div><div id="msgEmpty" style="text-align:center;padding:40px;color:#666">✉️ لا يوجد رسائل</div></div>
+<div id="notifScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>الإشعارات</b></div><div style="text-align:center;padding:40px;color:#666">🔔 لا يوجد إشعارات</div></div>
+
+<header><div class="logo"><div class="logo-icon">م</div> مكانك</div><div class="icon-btn" onclick="openProfile()">👤</div></header>
+<div class="search-wrap"><span>🔍</span><input id="searchInput" placeholder="ابحث عن شقق، موبايلات، وظائف، خدمات..." oninput="renderAds()"></div>
+<div class="cats" id="catsContainer"></div>
+<div class="grid" id="adsGrid"></div>
+
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="goHome()" id="nav-home"><div class="nav-icon">🏠</div><span>الرئيسية</span></div>
+  <div class="nav-item" onclick="openFavs()" id="nav-fav"><div class="nav-icon">❤️</div><span>المفضلة</span></div>
+  <div class="nav-item" onclick="openAdd()" style="flex:0"><div class="plus-btn">+</div></div>
+  <div class="nav-item" onclick="openNotifs()" id="nav-notif"><div class="nav-icon">🔔</div><span>الإشعارات</span></div>
+  <div class="nav-item" onclick="openMessages()" id="nav-msg"><div class="nav-icon">✉️</div><span>الرسائل</span></div>
+</div>
+
+<script>
+let currentCat="الكل";const categories=["الكل","شقق","سيارات","موبايلات","أثاث","وظائف","خدمات","أخرى"];
+let defaultAds=[
+{cat:"شقق",title:"شقة للايجار بالرياض - حي الملقا - 3 غرف",price:"2,500 ر.س",img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500",city:"الرياض",phone:"966500000000",desc:"شقة مفروشة بالكامل، موقع مميز قريب من الخدمات"},
+{cat:"سيارات",title:"تويوتا كامري 2022 فل كامل",price:"75,000 ر.س",img:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500",city:"جدة",phone:"966500000000",desc:"السيارة نظيفة جدا، ماشية 40 الف، صيانات وكالة"},
+{cat:"موبايلات",title:"ايفون 15 برو ماكس 256GB جديد",price:"4,200 ر.س",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500",city:"الرياض",phone:"966500000000",desc:"جديد بالكرتون، ضمان سنتين، مع جميع ملحقاته"},
+{cat:"وظائف",title:"مطلوب مندوب مبيعات براتب 6000 + عمولة",price:"6,000 ر.س",img:"https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500",city:"الرياض",phone:"966500000000",desc:"شركة كبيرة تطلب مندوبين، خبرة لا تقل عن سنتين"},
+{cat:"خدمات",title:"شركة نقل عفش بالرياض - خصم 30%",price:"300 ر.س",img:"https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=500",city:"الرياض",phone:"966500000000",desc:"نقل عفش مع الفك والتركيب والتغليف، عمالة محترفة"},
+{cat:"أخرى",title:"دراجة هوائية جبلية جديدة",price:"800 ر.س",img:"https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=500",city:"جدة",phone:"966500000000",desc:"دراجة مقاس 26، 21 سرعة، استخدام بسيط"}
+];
+function getAds(){let s=JSON.parse(localStorage.getItem('makank_ads')||'[]');return [...s,...defaultAds];}
+document.getElementById('catsContainer').innerHTML=categories.map(c=>`<div class="cat ${c===currentCat?'active':''}" onclick="setCat('${c}',this)">${c}</div>`).join('');
+function setCat(c,el){currentCat=c;document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderAds()}
+let currentDetailAd=null;
+function renderAds(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const all=getAds();
+  const favs=JSON.parse(localStorage.getItem('makank_favs')||'[]');
+  const f=all.filter(a=>{const mc=currentCat==="الكل"||a.cat===currentCat;const mq=a.title.toLowerCase().includes(q)||a.cat.toLowerCase().includes(q);return mc&&mq});
+  document.getElementById('adsGrid').innerHTML=f.map(a=>`<div class="card" onclick="openDetailByTitle('${a.title.replace(/'/g,"\\'")}')"><img src="${a.img}"><div class="fav-btn ${favs.includes(a.title)?'active':''}" onclick="event.stopPropagation();toggleFav('${a.title.replace(/'/g,"\\'")}')">❤️</div><div class="info"><div class="title">${a.title}</div><div class="meta">${a.cat} • ${a.city}</div><div class="price">${a.price}</div></div></div>`).join('');
+  renderFavs();
+}
+renderAds();
+function openDetailByTitle(title){let all=getAds();let ad=all.find(x=>x.title===title);if(ad){currentDetailAd=ad;document.getElementById('detailImg').src=ad.img;document.getElementById('detailTitle').innerText=ad.title;document.getElementById('detailPrice').innerText=ad.price;document.getElementById('detailCat').innerText=ad.cat;document.getElementById('detailCity').innerText=ad.city;document.getElementById('detailDesc').innerText=ad.desc||ad.title;document.getElementById('detailScreen').style.display="block"}}
+function closeDetail(){document.getElementById('detailScreen').style.display="none"}
+function openWhatsApp(){if(currentDetailAd)window.open('https://wa.me/'+currentDetailAd.phone+'?text=مرحبا بخصوص اعلانك: '+currentDetailAd.title,'_blank')}
+function startPrivateChat(){if(!currentDetailAd)return;closeDetail();document.getElementById('chatWith').innerText=currentDetailAd.title;document.getElementById('chatBox').innerHTML=`<div class="msg other">مرحبا، كيف اقدر اساعدك بخصوص ${currentDetailAd.title}؟</div>`;document.getElementById('chatScreen').style.display="block";let msgs=JSON.parse(localStorage.getItem('makank_messages')||'[]');if(!msgs.find(m=>m.title===currentDetailAd.title)){msgs.unshift({title:currentDetailAd.title,img:currentDetailAd.img,last:"مرحبا، كيف اقدر اساعدك؟",time:"الان"});localStorage.setItem('makank_messages',JSON.stringify(msgs))}renderMessages()}
+function closeChat(){document.getElementById('chatScreen').style.display="none";openMessages()}
+function sendMsg(){let txt=document.getElementById('chatInput').value.trim();if(!txt)return;document.getElementById('chatBox').innerHTML+=`<div class="msg me">${txt}</div>`;document.getElementById('chatInput').value="";document.getElementById('chatBox').scrollTop=document.getElementById('chatBox').scrollHeight;setTimeout(()=>{document.getElementById('chatBox').innerHTML+=`<div class="msg other">تم استلام رسالتك، سيتم الرد قريبا</div>`;document.getElementById('chatBox').scrollTop=document.getElementById('chatBox').scrollHeight},800)}
+function toggleFav(title){let favs=JSON.parse(localStorage.getItem('makank_favs')||'[]');if(favs.includes(title))favs=favs.filter(t=>t!==title);else favs.push(title);localStorage.setItem('makank_favs',JSON.stringify(favs));renderAds()}
+function renderFavs(){let favs=JSON.parse(localStorage.getItem('makank_favs')||'[]');let all=getAds();let favAds=all.filter(a=>favs.includes(a.title));document.getElementById('favEmpty').style.display=favAds.length?'none':'block';document.getElementById('favGrid').innerHTML=favAds.map(a=>`<div class="card" onclick="openDetailByTitle('${a.title.replace(/'/g,"\\'")}')"><img src="${a.img}"><div class="info"><div style="font-size:12px">${a.title}</div><div class="price">${a.price}</div></div></div>`).join('')}
+function renderMessages(){let msgs=JSON.parse(localStorage.getItem('makank_messages')||'[]');document.getElementById('msgEmpty').style.display=
