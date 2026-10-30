@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكانك</title>
+<style>
+:root{--bg:#0A0A0A;--card:#161616;--border:#242424;--green:#00FF88;--blue:#3B82F6;--gray:#888}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:var(--bg);color:#fff;padding-bottom:85px}
+header{position:sticky;top:0;z-index:100;background:#161616f2;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.logo{display:flex;gap:10px;font-weight:900;font-size:22px}
+.logo-icon{width:34px;height:34px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#000}
+.icon-btn{width:38px;height:38px;background:#222;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.search-wrap{margin:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;gap:10px}
+.search-wrap input{flex:1;background:transparent;border:0;color:#fff;outline:none}
+.cats{display:flex;gap:8px;overflow:auto;padding:0 16px 10px}
+.cat{white-space:nowrap;background:var(--card);border:1px solid var(--border);padding:9px 18px;border-radius:22px;font-size:14px;cursor:pointer}
+.cat.active{background:var(--green);color:#000;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;position:relative}
+.card img{width:100%;height:140px;object-fit:cover}
+.card .info{padding:10px}
+.card .price{color:var(--green);font-weight:900;margin-top:6px}
+.fav-btn{position:absolute;top:8px;left:8px;width:32px;height:32px;background:rgba(0,0,0,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
+.fav-btn.active{color:#ff3b30}
+#detailScreen{position:fixed;inset:0;background:#0A0A0A;z-index:9997;display:none;overflow:auto;padding-bottom:90px}
+.detail-img-wrap{position:relative;width:100%;height:300px;background:#111}
+.detail-img-wrap img{width:100%;height:100%;object-fit:cover}
+.detail-back{position:absolute;top:12px;right:12px;width:36px;height:36px;background:rgba(0,0,0,0.6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer}
+.detail-content{background:var(--card);margin:-20px 0 0;border-radius:24px 24px 0 0;padding:20px;position:relative;z-index:2;border-top:1px solid var(--border)}
+.detail-title{font-size:18px;font-weight:800}
+.detail-price{font-size:22px;font-weight:900;color:var(--green);margin:12px 0}
+.detail-meta{display:flex;gap:12px;color:var(--gray);font-size:13px;margin-bottom:16px}
+.detail-desc{background:#1E1E1E;border:1px solid var(--border);border-radius:12px;padding:14px;font-size:14px;line-height:1.6;color:#ccc;margin-bottom:16px}
+.detail-actions{display:flex;gap:10px}
+.btn-wa{flex:1;background:#25D366;color:#fff;border:0;padding:14px;border-radius:12px;font-weight:800;cursor:pointer}
+.btn-chat{flex:1;background:var(--blue);color:#fff;border:0;padding:14px;border-radius:12px;font-weight:800;cursor:pointer}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;align-items:center;padding:6px 0 10px;z-index:999}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#666;font-size:11px;flex:1}
+.nav-item.active{color:var(--blue)}
+.nav-item .nav-icon{font-size:22px}
+.plus-btn{width:56px;height:56px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;margin-top:-18px;border:3px solid #0A0A0A}
+#loginScreen{position:fixed;inset:0;background:#0A0A0A;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--card);width:100%;max-width:380px;padding:28px;border-radius:20px;border:1px solid var(--border);text-align:center}
+.login-box input{width:100%;padding:14px;margin-bottom:12px;border-radius:12px;border:1px solid var(--border);background:#1E1E1E;color:#fff}
+.login-box button{width:100%;padding:14px;background:var(--green);border:0;border-radius:12px;font-weight:900;color:#000}
+#profileScreen,#addScreen,#favScreen,#msgScreen,#notifScreen,#chatScreen{position:fixed;inset:0;background:#0A0A0A;z-index:9998;display:none;overflow:auto;padding-bottom:80px}
+.profile-header{padding:16px;display:flex;gap:12px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0}
+.profile-header button{background:#222;border:1px solid var(--border);color:#fff;width:36px;height:36px;border-radius:10px}
+.add-box,.profile-box{background:var(--card);margin:12px 16px;border-radius:16px;border:1px solid var(--border);padding:16px}
+.add-box input,.add-box select,.add-box textarea,.profile-box input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#1E1E1E;color:#fff;margin-bottom:10px}
+.upload-area{border:2px dashed #333;border-radius:14px;padding:20px;text-align:center;background:#1E1E1E;cursor:pointer}
+#previewImg{width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:10px;display:none}
+.btn-green{width:100%;padding:13px;background:var(--green);border:0;border-radius:12px;font-weight:800;color:#000}
+.chat-box{display:flex;flex-direction:column;gap:10px;padding:16px}
+.msg{max-width:75%;padding:10px 14px;border-radius:14px;font-size:14px}
+.msg.me{align-self:flex-end;background:var(--blue);color:#fff;border-radius:14px 14px 2px 14px}
+.msg.other{align-self:flex-start;background:var(--card);border:1px solid var(--border);color:#fff;border-radius:14px 14px 14px 2px}
+.chat-input{display:flex;gap:8px;padding:12px;background:var(--card);border-top:1px solid var(--border);position:sticky;bottom:0}
+.chat-input input{flex:1;padding:12px;border-radius:22px;border:1px solid var(--border);background:#1E1E1E;color:#fff;outline:none}
+.chat-input button{width:44px;height:44px;background:var(--blue);border:0;border-radius:50%;color:#fff;font-size:18px;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="loginScreen"><div class="login-box"><div class="logo" style="justify-content:center;margin-bottom:12px"><div class="logo-icon">م</div> مكانك</div><h2>مرحبا في مكانك</h2><div id="step1"><input id="userName" placeholder="اسمك"><input id="userPhone" placeholder="التليفون"><input id="userEmail" placeholder="الايميل"><button onclick="sendCode()">ارسال الكود</button></div><div id="step2" style="display:none"><div id="showCode" style="font-size:32px;color:var(--green);margin:10px;letter-spacing:5px"></div><input id="codeInput" placeholder="الكود"><button onclick="verifyCode()">دخول</button></div></div></div>
+
+<div id="detailScreen">
+  <div class="detail-img-wrap"><img id="detailImg" src=""><div class="detail-back" onclick="closeDetail()">✕</div></div>
+  <div class="detail-content">
+    <div class="detail-title" id="detailTitle"></div>
+    <div class="detail-price" id="detailPrice"></div>
+    <div class="detail-meta"><span id="detailCat"></span><span>•</span><span id="detailCity"></span><span>•</span><span>اليوم</span></div>
+    <div class="detail-desc" id="detailDesc"></div>
+    <div class="detail-actions"><button class="btn-chat" onclick="startPrivateChat()">💬 تواصل خاص</button><button class="btn-wa" onclick="openWhatsApp()">🟢 واتساب</button></div>
+  </div>
+</div>
+
+<div id="chatScreen"><div class="profile-header"><button onclick="closeChat()">✕</button><b id="chatWith">محادثة خاصة</b></div><div class="chat-box" id="chatBox"></div><div class="chat-input"><input id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendMsg()"><button onclick="sendMsg()">➤</button></div></div>
+
+<div id="addScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>اضف اعلان</b></div><div class="add-box">
+<input id="adTitle" placeholder="عنوان الاعلان *">
+<select id="adCat"><option>شقق</option><option>سيارات</option><option selected>موبايلات</option><option>أثاث</option><option>وظائف</option><option>خدمات</option><option>أخرى</option></select>
+<input id="adPrice" placeholder="السعر *"><input id="adCity" placeholder="المدينة"><input id="adPhone" placeholder="واتساب *">
+<label>صورة الاعلان *</label>
+<input type="file" id="adImgFile" accept="image/*" style="display:none" onchange="handleImage(this)">
+<div class="upload-area" onclick="document.getElementById('adImgFile').click()"><div style="font-size:32px">📸</div><p style="color:#888;font-size:13px">اختر من معرض الصور</p><b style="color:var(--green)">اختر صورة</b></div>
+<img id="previewImg"><textarea id="adDesc" rows="3" placeholder="الوصف"></textarea><button class="btn-green" onclick="publishAd()">نشر الان 🚀</button>
+</div></div>
+
+<div id="profileScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>البروفايل</b></div><div class="profile-box"><p id="pName"></p><button class="btn-green" onclick="closeAll()">اغلاق</button></div></div>
+<div id="favScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>المفضلة</b></div><div class="grid" id="favGrid" style="margin-top:12px"></div><div id="favEmpty" style="text-align:center;padding:40px;color:#666">❤️ لا يوجد مفضلة</div></div>
+<div id="msgScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>الرسائل</b></div><div id="msgList" style="padding:12px"></div><div id="msgEmpty" style="text-align:center;padding:40px;color:#666">✉️ لا يوجد رسائل</div></div>
+<div id="notifScreen"><div class="profile-header"><button onclick="closeAll()">✕</button><b>الإشعارات</b></div><div style="text-align:center;padding:40px;color:#666">🔔 لا يوجد إشعارات</div></div>
+
+<header><div class="logo"><div class="logo-icon">م</div> مكانك</div><div class="icon-btn" onclick="openProfile()">👤</div></header>
+<div class="search-wrap"><input id="searchInput" placeholder="ابحث شقق، موبايلات، وظائف..." oninput="renderAds()"></div>
+<div class="cats" id="catsContainer"></div>
+<div class="grid" id="adsGrid"></div>
+
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="goHome()" id="nav-home"><div class="nav-icon">🏠</div><span>الرئيسية</span></div>
+  <div class="nav-item" onclick="openFavs()" id="nav-fav"><div class="nav-icon">❤️</div><span>المفضلة</span></div>
+  <div class="nav-item" onclick="openAdd()" style="flex:0"><div class="plus-btn">+</div></div>
+  <div class="nav-item" onclick="openNotifs()" id="nav-notif"><div class="nav-icon">🔔</div><span>الإشعارات</span></div>
+  <div class="nav-item" onclick="openMessages()" id="nav-msg"><div class="nav-icon">✉️</div><span>الرسائل</span></div>
+</div>
+
+<script>
+let currentCat="الكل";const categories=["الكل","شقق","سيارات","موبايلات","أثاث","وظائف","خدمات","أخرى"];
+let defaultAds=[
+{cat:"شقق",title:"شقة للايجار بالرياض - حي الملقا",price:"2,500 ر.س",img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500",city:"الرياض",phone:"966500000000",desc:"شقة مفروشة بالكامل، 3 غرف، موقع مميز"},
+{cat:"سيارات",title:"تويوتا كامري 2022",price:"75,000 ر.س",img:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500",city:"جدة",phone:"966500000000",desc:"نظيفة جدا ماشية 40 الف"},
+{cat:"موبايلات",title:"ايفون 15 برو ماكس 256GB",price:"4,200 ر.س",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500",city:"الرياض",phone:"966500000000",desc:"جديد بالكرتون ضمان سنتين"},
+{cat:"وظائف",title:"مطلوب مندوب مبيعات براتب 6000",price:"6,000 ر.س",img:"https://images.unsplash.com/photo-1521791136064-7986c2920216?w=500",city:"الرياض",phone:"966500000000",desc:"شركة كبيرة تطلب مندوبين"},
+{cat:"خدمات",title:"شركة نقل عفش بالرياض",price:"300 ر.س",img:"https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=500",city:"الرياض",phone:"966500000000",desc:"نقل عفش مع الفك والتركيب"},
+{cat:"أخرى",title:"دراجة هوائية جبلية",price:"800 ر.س",img:"https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=500",city:"جدة",phone:"966500000000",desc:"دراجة مقاس 26، 21 سرعة"}
+];
+function getAds(){let s=JSON.parse(localStorage.getItem('makank_ads')||'[]');return [...s,...defaultAds];}
+document.getElementById('catsContainer').innerHTML=categories.map(c=>`<div class="cat ${c===currentCat?'active':''}" onclick="setCat('${c}',this)">${c}</div>`).join('');
+function setCat(c,el){currentCat=c;document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderAds()}
+let currentDetailAd=null;
+function renderAds(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const all=getAds();
+  const favs=JSON.parse(localStorage.getItem('makank_favs')||'[]');
+  const f=all.filter(a=>{const mc=currentCat==="الكل"||a.cat===currentCat;const mq=a.title.toLowerCase().includes(q);return mc&&mq});
+  document.getElementById('adsGrid').innerHTML=f.map(a=>`<div class="card" onclick="openDetailByTitle('${a.title.replace(/'/g,"\\'")}')"><img src="${a.img}"><div class="fav-btn ${favs.includes(a.title)?'active':''}" onclick="event.stopPropagation();toggleFav('${a.title.replace(/'/g,"\\'")}')">❤️</div><div class="info"><div style="font-size:13px;height:34px;overflow:hidden">${a.title}</div><div style="color:#888;font-size:11px">${a.cat} • ${a.city}</div><div class="price">${a.price}</div></div></div>`).join('');
+  renderFavs();
+}
+renderAds();
+function openDetailByTitle(title){let all=getAds();let ad=all.find(x=>x.title===title);if(ad){currentDetailAd=ad;detailImg.src=ad.img;detailTitle.innerText=ad.title;detailPrice.innerText=ad.price;detailCat.innerText=ad.cat;detailCity.innerText=ad.city;detailDesc.innerText=ad.desc||ad.title;detailScreen.style.display="block"}}
+function closeDetail(){detailScreen.style.display="none"}
+function openWhatsApp(){if(currentDetailAd)window.open('https://wa.me/'+currentDetailAd.phone+'?text=مرحبا بخصوص اعلانك: '+currentDetailAd.title,'_blank')}
+function startPrivateChat(){if(!currentDetailAd)return;closeDetail();chatWith.innerText=currentDetailAd.title;chatBox.innerHTML=`<div class="msg other">مرحبا، كيف اقدر اساعدك بخصوص ${currentDetailAd.title}؟</div>`;chatScreen.style.display="block";let msgs=JSON.parse(localStorage.getItem('makank_messages')||'[]');if(!msgs.find(m=>m.title===currentDetailAd.title)){msgs.unshift({title:currentDetailAd.title,img:currentDetailAd.img,last:"مرحبا، كيف اقدر اساعدك؟",time:"الان"});localStorage.setItem('makank_messages',JSON.stringify(msgs))}renderMessages()}
+function closeChat(){chatScreen.style.display="none";openMessages()}
+function sendMsg(){let txt=chatInput.value.trim();if(!txt)return;chatBox.innerHTML+=`<div class="msg me">${txt}</div>`;chatInput.value="";chatBox.scrollTop=chatBox.scrollHeight;setTimeout(()=>{chatBox.innerHTML+=`<div class="msg other">تم استلام رسالتك، سيتم الرد قريبا</div>`;chatBox.scrollTop=chatBox.scrollHeight},800)}
+function toggleFav(title){let favs=JSON.parse(localStorage.getItem('makank_favs')||'[]');if(favs.includes(title))favs=favs.filter(t=>t!==title);else favs.push(title);localStorage.setItem('makank_favs',JSON.stringify(favs));renderAds()}
+function renderFavs(){let favs=JSON.parse(localStorage.getItem('makank_favs')||'[]');let all=getAds();let favAds=all.filter(a=>favs.includes(a.title));favEmpty.style.display=favAds.length?'none':'block';favGrid.innerHTML=favAds.map(a=>`<div class="card" onclick="openDetailByTitle('${a.title.replace(/'/g,"\\'")}')"><img src="${a.img}"><div class="info"><div style="font-size:12px">${a.title}</div><div class="price">${a.price}</div></div></div>`).join('')}
+function renderMessages(){let msgs=JSON.parse(localStorage.getItem('makank_messages')||'[]');msgEmpty.style.display=msgs.length?'none':'block';msgList.innerHTML=msgs.map(m=>`<div style="display:flex;gap:12px;background:var(--card);border:1px solid var(--border);padding:12px;border-radius:14px;margin-bottom:10px;cursor:pointer" onclick="openDetailByTitle('${m.title.replace(/'/g,"\\'")}');startPrivateChat()"><img src="${m.img}" style="width:48px;height:48px;border-radius:10px;object-fit:cover"><div style="flex:1"><div style="font-weight:700;font-size:14px">${m.title}</div><div style="color:#888;font-size:12px">${m.last}</div></div><div style="color:#888;font-size:11px">${m.time}</div></div>`).join('')}
+renderMessages();
+let selectedImageBase64="";function handleImage(input){if(input.files&&input.files[0]){let reader=new FileReader();reader.onload=function(e){selectedImageBase64=e.target.result;previewImg.src=selectedImageBase64;previewImg.style.display="block"};reader.readAsDataURL(input.files[0])}}
+let code="";function sendCode(){code=Math.floor(100000+Math.random()*900000).toString();showCode.innerText=code;step1.style.display="none";step2.style.display="block";localStorage.setItem('temp_user',JSON.stringify({name:userName.value,phone:userPhone.value,email:userEmail.value}))}
+function verifyCode(){if(codeInput.value===code){let u=JSON.parse(localStorage.getItem('temp_user'));localStorage.setItem('makank_user',JSON.stringify(u));loginScreen.style.display="none"}else{alert("الكود غلط")}}
+if(localStorage.getItem('makank_user'))loginScreen.style.display="none";
+function closeAll(){['profileScreen','addScreen','favScreen','msgScreen','notifScreen','detailScreen','chatScreen'].forEach(id=>{let el=document.getElementById(id);if(el)el.style.display='none'});setActiveNav('home')}
+function setActiveNav(name){document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));let map={home:'nav-home',fav:'nav-fav',notif:'nav-notif',msg:'nav-msg'};if(map[name])document.getElementById(map[name]).classList.add('active')}
+function openProfile(){closeAll();profileScreen.style.display="block"}
+function openFavs(){closeAll();favScreen.style.display="block";setActiveNav('fav')}
+function openMessages(){closeAll();msgScreen.style.display="block";setActiveNav('msg');renderMessages()}
+function openNotifs(){closeAll();notifScreen.style.display="block";setActiveNav('notif')}
+function goHome(){closeAll();window.scrollTo(0,0);setActiveNav('home')}
+function openAdd(){if(!localStorage.getItem('makank_user')){alert("سجل دخول اولا");return}addScreen.style.display="block";let u=JSON.parse(localStorage.getItem('makank_user'));if(u&&u.phone)adPhone.value=u.phone}
+function publishAd(){let title=adTitle.value.trim(),cat=adCat.value,price=adPrice.value.trim(),city=adCity.value.trim()||"الرياض",phone=adPhone.value.trim(),img=selectedImageBase64||"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500",desc=adDesc.value.trim()||title;if(title==""||price==""||phone==""){alert("اكمل الحقول *");return}let newAd={cat,title,price,city,phone:phone.replace(/^0/,'966'),img,desc};let saved=JSON.parse(localStorage.getItem('makank_ads')||'[]');saved.unshift(newAd);localStorage.setItem('makank_ads',JSON.stringify(saved));closeAll();renderAds();alert("تم نشر اعلانك ✅")}
+</script>
+</body>
+</html>
