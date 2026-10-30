@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكانك</title>
+<style>
+:root{--bg:#0A0A0A;--card:#161616;--border:#242424;--green:#00FF88}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:var(--bg);color:#fff;padding-bottom:90px}
+header{position:sticky;top:0;background:#161616;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.logo{display:flex;gap:10px;font-weight:900;font-size:22px}
+.logo-icon{width:34px;height:34px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#000}
+.icon-btn{width:38px;height:38px;background:#222;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.search-wrap{margin:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;gap:10px}
+.search-wrap input{flex:1;background:transparent;border:0;color:#fff;outline:none}
+.cats{display:flex;gap:8px;overflow:auto;padding:0 16px 10px}
+.cat{white-space:nowrap;background:var(--card);border:1px solid var(--border);padding:9px 18px;border-radius:22px;font-size:14px;cursor:pointer}
+.cat.active{background:var(--green);color:#000;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.card img{width:100%;height:130px;object-fit:cover}
+.card .info{padding:10px}
+.card .price{color:var(--green);font-weight:900;margin-top:6px}
+#loginScreen{position:fixed;inset:0;background:#0A0A0A;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--card);width:100%;max-width:380px;padding:28px;border-radius:20px;border:1px solid var(--border);text-align:center}
+.login-box input{width:100%;padding:14px;margin-bottom:12px;border-radius:12px;border:1px solid var(--border);background:#1E1E1E;color:#fff}
+.login-box button{width:100%;padding:14px;background:var(--green);border:0;border-radius:12px;font-weight:900;color:#000}
+#profileScreen,#addScreen{position:fixed;inset:0;background:#0A0A0A;z-index:9999;display:none;overflow:auto}
+.profile-header{padding:16px;display:flex;gap:12px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0}
+.profile-header button{background:#222;border:1px solid var(--border);color:#fff;width:36px;height:36px;border-radius:10px}
+.add-box,.profile-box{background:var(--card);margin:12px 16px;border-radius:16px;border:1px solid var(--border);padding:16px}
+.add-box input,.add-box select,.add-box textarea,.profile-box input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#1E1E1E;color:#fff;margin-bottom:10px}
+.upload-area{border:2px dashed #333;border-radius:14px;padding:24px;text-align:center;background:#1E1E1E;cursor:pointer}
+.upload-area:hover{border-color:var(--green);background:#1e2e24}
+#previewImg{width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:10px;display:none;border:1px solid #333}
+.btn-green{width:100%;padding:13px;background:var(--green);border:0;border-radius:12px;font-weight:800;color:#000}
+.fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;cursor:pointer;z-index:500;border:0}
+</style>
+</head>
+<body>
+<div id="loginScreen"><div class="login-box"><div class="logo" style="justify-content:center;margin-bottom:12px"><div class="logo-icon">م</div> مكانك</div><h2>مرحبا في مكانك</h2><div id="step1"><input id="userName" placeholder="اسمك"><input id="userPhone" placeholder="التليفون"><input id="userEmail" placeholder="الايميل"><button onclick="sendCode()">ارسال الكود</button></div><div id="step2" style="display:none"><div id="showCode" style="font-size:32px;color:var(--green);margin:10px 0;letter-spacing:5px"></div><input id="codeInput" placeholder="الكود"><button onclick="verifyCode()">دخول</button></div></div></div>
+
+<div id="addScreen"><div class="profile-header"><button onclick="closeAdd()">✕</button><b>اضف اعلان جديد</b></div><div class="add-box">
+<input id="adTitle" placeholder="عنوان الاعلان *">
+<select id="adCat">
+<option value="شقق">شقق</option>
+<option value="سيارات">سيارات</option>
+<option value="موبايلات" selected>موبايلات</option>
+<option value="أثاث">أثاث</option>
+<option value="وظائف">وظائف</option>
+<option value="خدمات">خدمات</option>
+<option value="أخرى">أخرى</option>
+</select>
+<input id="adPrice" placeholder="السعر *">
+<input id="adCity" placeholder="المدينة">
+<input id="adPhone" placeholder="رقم الواتساب *">
+
+<label>صورة الاعلان *</label>
+<input type="file" id="adImgFile" accept="image/*" style="display:none" onchange="handleImage(this)">
+<div class="upload-area" onclick="document.getElementById('adImgFile').click()">
+<div style="font-size:36px">📸</div>
+<p style="color:#888;font-size:13px">اضغط لاختيار صورة من معرض الصور</p>
+<b style="color:var(--green);margin-top:6px;display:block">اختر من المعرض</b>
+</div>
+<img id="previewImg">
+<p id="imgStatus" style="font-size:12px;color:var(--green);margin-top:6px;display:none">✅ تم اختيار الصورة - هتظهر في الاعلان</p>
+
+<textarea id="adDesc" rows="3" placeholder="الوصف"></textarea>
+<button class="btn-green" onclick="publishAd()">نشر الان 🚀</button>
+</div></div>
+
+<header><div class="logo"><div class="logo-icon">م</div> مكانك</div><div class="icon-btn" onclick="openProfile()">👤</div></header>
+<div class="search-wrap"><input id="searchInput" placeholder="ابحث شقق، موبايلات، وظائف..." oninput="renderAds()"></div>
+<div class="cats" id="catsContainer"></div>
+<div class="grid" id="adsGrid"></div>
+<button class="fab" onclick="openAdd()">+</button>
+
+<div id="profileScreen"><div class="profile-header"><button onclick="closeProfile()">✕</button><b>البروفايل</b></div><div class="profile-box"><p id="pName"></p><button class="btn-green" onclick="closeProfile()">اغلاق</button></div></div>
+
+<script>
+let currentCat="الكل";const categories=["الكل","شقق","سيارات","موبايلات","أثاث","وظائف","خدمات","أخرى"];
+let defaultAds=[
+{cat:"شقق",title:"شقة للايجار",price:"2,500 ر.س",img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500",city:"الرياض",phone:"9665"},
+{cat:"موبايلات",title:"ايفون 15",price:"4,200 ر.س",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500",city:"الرياض",phone:"9665"}
+];
+function getAds(){let s=JSON.parse(localStorage.getItem('makank_ads')||'[]');return [...s,...defaultAds];}
+document.getElementById('catsContainer').innerHTML=categories.map(c=>`<div class="cat ${c===currentCat?'active':''}" onclick="setCat('${c}',this)">${c}</div>`).join('');
+function setCat(c,el){currentCat=c;document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderAds()}
+function renderAds(){const q=document.getElementById('searchInput').value.toLowerCase();const all=getAds();const f=all.filter(a=>{const mc=currentCat==="الكل"||a.cat===currentCat;return mc});document.getElementById('adsGrid').innerHTML=f.map(a=>`<div class="card"><img src="${a.img}"><div class="info"><div style="font-size:12px">${a.title}</div><div class="price">${a.price}</div></div></div>`).join('')}
+renderAds();
+
+let selectedImageBase64="";
+function handleImage(input){
+  if(input.files && input.files[0]){
+    let file=input.files[0];
+    if(file.size>5*1024*1024){alert("الصورة كبيرة - اختار صورة اصغر من 5 ميجا");return}
+    let reader=new FileReader();
+    reader.onload=function(e){
+      selectedImageBase64=e.target.result;
+      document.getElementById('previewImg').src=selectedImageBase64;
+      document.getElementById('previewImg').style.display="block";
+      document.getElementById('imgStatus').style.display="block";
+    }
+    reader.readAsDataURL(file);
+  }
+}
+
+let code="";function sendCode(){code=Math.floor(100000+Math.random()*900000).toString();showCode.innerText=code;step1.style.display="none";step2.style.display="block";localStorage.setItem('temp_user',JSON.stringify({name:userName.value,phone:userPhone.value,email:userEmail.value}))}
+function verifyCode(){if(codeInput.value===code){let u=JSON.parse(localStorage.getItem('temp_user'));localStorage.setItem('makank_user',JSON.stringify(u));loginScreen.style.display="none"}else{alert("الكود غلط")}}
+if(localStorage.getItem('makank_user'))loginScreen.style.display="none";
+function openProfile(){profileScreen.style.display="block"}
+function closeProfile(){profileScreen.style.display="none"}
+function openAdd(){addScreen.style.display="block"}
+function closeAdd(){addScreen.style.display="none";selectedImageBase64="";previewImg.style.display="none";imgStatus.style.display="none";adImgFile.value=""}
+function publishAd(){
+  let title=adTitle.value.trim(),cat=adCat.value,price=adPrice.value.trim(),city=adCity.value.trim()||"الرياض",phone=adPhone.value.trim();
+  if(title==""||price==""||phone==""||selectedImageBase64==""){alert("اكمل البيانات واختار صورة من المعرض *");return}
+  let newAd={cat:cat,title:title,price:price,city:city,phone:phone.replace(/^0/,'966'),img:selectedImageBase64};
+  let saved=JSON.parse(localStorage.getItem('makank_ads')||'[]');saved.unshift(newAd);localStorage.setItem('makank_ads',JSON.stringify(saved));closeAdd();renderAds();alert("تم نشر اعلانك ✅");
+}
+</script>
+</body>
+</html>
