@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مكانك | سوق السعودية المفتوح</title>
+<link rel="icon" href="logo.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+:root{--blue:#2E7CF6;--bg:#0F0F0F;--card:#1E1E1E;--card2:#242424;--border:#2A2A2A;--green:#00D084;--muted:#9CA3AF}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',system-ui}
+body{background:var(--bg);color:#fff;padding-bottom:85px;overflow-x:hidden}
+.top-bar{background:var(--blue);padding:10px 14px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:1000}
+.logo-area{display:flex;align-items:center;gap:8px;font-weight:900;font-size:19px}
+.logo-box{width:38px;height:38px;background:#fff;border-radius:10px;overflow:hidden;padding:2px}
+.logo-box img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.search-box{flex:1;background:rgba(0,0,0,0.2);border-radius:25px;padding:10px 16px;display:flex;gap:10px;border:1px solid rgba(255,255,255,0.1)}
+.search-box input{flex:1;background:transparent;border:0;color:#fff;outline:none;font-size:14px}
+.stories-wrap{background:#161616;padding:14px 0 12px;border-bottom:1px solid var(--border)}
+.stories{display:flex;gap:16px;overflow-x:auto;padding:0 16px;scrollbar-width:none}
+.story{flex:0 0 68px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.story-img{width:62px;height:62px;border-radius:50%;padding:3px;background:linear-gradient(45deg,var(--blue),#00D084)}
+.story-img div{width:100%;height:100%;border-radius:50%;background:#1A1A1A;overflow:hidden;border:2px solid #161616;display:flex;align-items:center;justify-content:center;font-size:24px}
+.story-img img{width:100%;height:100%;object-fit:cover}
+.story span{font-size:11px;color:var(--muted)}
+.cats-scroll{background:#161616;display:flex;overflow-x:auto;padding:0 8px;border-bottom:1px solid var(--border);position:sticky;top:56px;z-index:900;scrollbar-width:none}
+.cat-tab{white-space:nowrap;padding:14px 16px;font-size:14px;color:#888;cursor:pointer;border-bottom:3px solid transparent}
+.cat-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:800}
+.filters-bar{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;scrollbar-width:none}
+.f-pill{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:13px;color:#bbb;white-space:nowrap;cursor:pointer}
+.f-pill.active{background:var(--blue);color:#fff}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.section-head h3{font-size:16px;font-weight:800;color:var(--blue)}
+.ads-container{padding:0 8px;display:flex;flex-direction:column;gap:8px}
+.ad-card{background:var(--card);border-radius:14px;display:flex;overflow:hidden;border:1px solid var(--border);height:124px;cursor:pointer}
+.ad-card img{width:124px;min-width:124px;height:124px;object-fit:cover}
+.ad-content{flex:1;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.ad-title{font-size:14.5px;font-weight:700;line-height:1.35;color:#E5E7EB;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ad-footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.ad-meta{display:flex;gap:10px;color:var(--muted);font-size:11.5px}
+.ad-price{background:rgba(46,124,246,0.15);color:var(--blue);padding:3px 10px;border-radius:20px;font-weight:800;font-size:13px}
+.ad-user-line{display:flex;justify-content:flex-end;gap:6px;color:#9CA3AF;font-size:12px;margin-top:4px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:6px 0;z-index:1000}
+.nav-item{display:flex;flex-direction:column;align-items:center;color:#666;font-size:10.5px;flex:1;padding:4px 0;cursor:pointer}
+.nav-item.active{color:var(--blue)}
+.nav-plus{flex:0 0 70px;display:flex;flex-direction:column;align-items:center}
+.plus-btn{width:56px;height:56px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;margin-top:-20px;border:4px solid #111}
+.screen{position:fixed;inset:0;background:var(--bg);z-index:2000;display:none;overflow-y:auto;padding-bottom:90px}
+.screen.active{display:block}
+.screen-header{position:sticky;top:0;background:#161616f2;padding:14px 16px;display:flex;gap:12px;border-bottom:1px solid var(--border);z-index:10}
+.screen-header button{width:38px;height:38px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:#fff;cursor:pointer}
+#loginScreen{position:fixed;inset:0;background:radial-gradient(ellipse at top,#1E3A8A20,#0F0F0F);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:linear-gradient(180deg,#1E1E1E,#161616);width:100%;max-width:380px;padding:28px;border-radius:24px;border:1px solid var(--border);text-align:center}
+.login-logo-big{width:88px;height:88px;border-radius:20px;overflow:hidden;margin:0 auto 14px;background:#fff;padding:4px}
+.login-logo-big img{width:100%;height:100%;object-fit:cover;border-radius:16px}
+.input-field{width:100%;padding:14px 16px;margin-bottom:10px;border-radius:12px;border:1px solid var(--border);background:#0F0F0F;color:#fff;outline:none}
+.btn-primary{width:100%;padding:15px;background:linear-gradient(90deg,var(--blue),#1a5fcc);border:0;border-radius:12px;font-weight:800;color:#fff;cursor:pointer;font-size:15px;margin-top:8px}
+.detail-img-wrap{position:relative;height:320px;background:#111}
+.detail-img-wrap img{width:100%;height:100%;object-fit:cover}
+.detail-body{background:var(--card);margin-top:-24px;border-radius:24px 24px 0 0;position:relative;padding:22px 18px}
+.detail-title{font-size:18px;font-weight:800}
+.detail-price{color:var(--green);font-weight:900;font-size:24px;margin:12px 0}
+.detail-desc{background:#0F0F0F;border:1px solid var(--border);border-radius:14px;padding:14px;color:#D1D5DB;line-height:1.6;margin-top:10px}
+.action-row{display:flex;gap:10px;margin-top:16px}
+.action-row button{flex:1;padding:14px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+.btn-wa{background:#25D366;color:#fff}
+.btn-call{background:var(--blue);color:#fff}
+.empty{padding:60px 20px;text-align:center;color:var(--muted)}
+.add-form{padding:16px}
+.add-form label{font-size:13px;color:var(--muted);margin:12px 0 6px;display:block}
+.add-form input,.add-form textarea,.add-form select{width:100%;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:#fff;outline:none}
+.add-form textarea{min-height:90px}
+</style>
+</head>
+<body>
+<div class="top-bar">
+<div class="logo-area"><div class="logo-box"><img src="logo.png" alt="مكانك"></div> مكانك</div>
+<div class="search-box"><input id="searchInput" placeholder="ابحث في مكانك..." oninput="renderAds()"><span>🔍</span></div>
+<div style="font-size:24px;cursor:pointer" onclick="openProfile()">☰</div>
+</div>
+<div class="stories-wrap"><div class="stories">
+<div class="story" onclick="setCat('الكل')"><div class="story-img"><div>🔥</div></div><span>الكل</span></div>
+<div class="story" onclick="setCat('عقارات')"><div class="story-img"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200"></div><span>عقارات</span></div>
+<div class="story" onclick="setCat('سيارات')"><div class="story-img"><img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=200"></div><span>سيارات</span></div>
+<div class="story" onclick="setCat('أجهزة')"><div class="story-img"><img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=200"></div><span>أجهزة</span></div>
+<div class="story" onclick="setCat('أثاث')"><div class="story-img"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200"></div><span>أثاث</span></div>
+<div class="story" onclick="setCat('خدمات')"><div class="story-img"><div>🛠️</div></div><span>خدمات</span></div>
+</div></div>
+<div class="cats-scroll" id="catsBar"></div>
+<div class="filters-bar">
+<div class="f-pill" onclick="filterCity('الكل')">🌍 كل المناطق</div>
+<div class="f-pill" onclick="filterCity('الرياض')">الرياض</div>
+<div class="f-pill" onclick="filterCity('جدة')">جدة</div>
+<div class="f-pill" onclick="filterCity('الدمام')">الدمام</div>
+</div>
+<div class="section-head"><h3>أحدث الإعلانات</h3><span id="adsCount"></span></div>
+<div class="ads-container" id="adsList"></div>
+<div class="bottom-nav">
+<div class="nav-item active" onclick="closeAllScreens()"><div style="font-size:22px">🏠</div>الرئيسية</div>
+<div class="nav-item" onclick="openFavs()"><div style="font-size:20px">❤️</div>المفضلة</div>
+<div class="nav-plus" onclick="openAdd()"><div class="plus-btn">+</div></div>
+<div class="nav-item" onclick="openNotifs()"><div style="font-size:20px">🔔</div>الإشعارات</div>
+<div class="nav-item" onclick="openMessages()"><div style="font-size:20px">✉️</div>الرسائل</div>
+</div>
+
+<div id="loginScreen"><div class="login-card">
+<div class="login-logo-big"><img src="logo.png" alt="مكانك"></div>
+<h2>مرحباً في مكانك</h2>
+<p style="color:#9CA3AF;font-size:13px;margin:6px 0 20px">سوق السعودية المفتوح</p>
+<input id="userName" class="input-field" placeholder="الاسم" value="باسم السيد">
+<input id="userPhone" class="input-field" placeholder="الجوال" value="0578701979" style="direction:ltr;text-align:right">
+<input id="userEmail" class="input-field" placeholder="الايميل" value="basemnms505@gmail.com" style="direction:ltr;text-align:right">
+<button class="btn-primary" onclick="directLogin()">🚀 دخول مباشر</button>
+</div></div>
+
+<div id="profileScreen" class="screen"><div class="screen-header"><button onclick="closeAllScreens()">✕</button><b>حسابي</b></div><div style="text-align:center;padding:24px"><div id="avatarLetter" style="width:84px;height:84px;background:linear-gradient(135deg,#2E7CF6,#00D084);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin:0 auto;font-weight:900">ب</div><h3 id="profileName" style="margin-top:14px"></h3><div style="background:#1E1E1E;border:1px solid #2A2A2A;border-radius:16px;padding:14px;margin:18px 0;text-align:right"><p id="pName"></p><p id="pPhone" style="direction:ltr;text-align:right"></p><p id="pEmail" style="direction:ltr;text-align:right"></p></div><button onclick="logout()" style="width:100%;padding:14px;background:#EF4444;border:0;border-radius:12px;color:#fff;font-weight:800">🚪 خروج</button></div></div>
+
+<div id="detailScreen" class="screen"><div class="detail-img-wrap"><img id="detailImg"><button onclick="closeAllScreens()" style="position:absolute;top:12px;right:12px;width:40px;height:40px;background:rgba(0,0,0,0.6);border-radius:12px;border:1px solid rgba(255,255,255,0.2);color:#fff">✕</button></div><div class="detail-body"><div id="detailTitle" class="detail-title"></div><div id="detailPrice" class="detail-price"></div><div id="detailMeta" style="color:#9CA3AF;font-size:13px;margin:8px 0"></div><div id="detailDesc" class="detail-desc"></div><div class="action-row"><button class="btn-call" onclick="startChat()">💬 محادثة</button><button class="btn-wa" onclick="openWhatsApp()">🟢 واتساب</button></div><button style="width:100%;margin-top:12px;padding:12px;background:#242424;border:1px solid #2A2A2A;border-radius:12px;color:#bbb" onclick="toggleFav()">❤️ حفظ في المفضلة</button></div></div>
+
+<div id="addScreen" class="screen"><div class="screen-header"><button onclick="closeAllScreens()">✕</button><b>إضافة إعلان</b></div><div class="add-form"><label>عنوان الإعلان *</label><input id="adTitle" placeholder="مثال: شقة للايجار حي الملقا"><label>القسم *</label><select id="adCat"><option>عقارات</option><option>سيارات</option><option>أجهزة</option><option>أثاث</option><option>خدمات</option><option>وظائف</option><option>أخرى</option></select><label>السعر</label><input id="adPrice" placeholder="2500"><label>المدينة *</label><select id="adCity"><option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة</option><option>المدينة</option><option>بريدة</option></select><label>رقم التواصل</label><input id="adPhone" placeholder="05xxxxxxxx" value="0578701979" style="direction:ltr;text-align:right"><label>الوصف</label><textarea id="adDesc" placeholder="تفاصيل الإعلان..."></textarea><label>رابط صورة</label><input id="adImg" placeholder="https://..."><button class="btn-primary" onclick="publishAd()" style="margin-top:16px">✅ نشر الآن</button></div></div>
+
+<div id="favScreen" class="screen"><div class="screen-header"><button onclick="closeAllScreens()">✕</button><b>المفضلة</b></div><div class="ads-container" id="favGrid" style="margin-top:12px"></div></div>
+<div id="msgScreen" class="screen"><div class="screen-header"><button onclick="closeAllScreens()">✕</button><b>الرسائل</b></div><div class="empty"><div style="font-size:48px">💬</div><p>لا يوجد رسائل</p></div></div>
+<div id="notifScreen" class="screen"><div class="screen-header"><button onclick="closeAllScreens()">✕</button><b>الإشعارات</b></div><div class="empty"><div style="font-size:48px">🔔</div><p>لا يوجد إشعارات</p></div></div>
+
+<script>
+let currentCat="الكل";let currentCity="الكل";let currentDetailAd=null;
+const categories=["الكل","عقارات","سيارات","أجهزة","أثاث","وظائف","خدمات","أخرى"];
+const defaultAds=[
+{cat:"عقارات",title:"شقة فاخرة للايجار حي الملقا - الرياض",price:"2,800 ر.س / شهريا",img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600",city:"الرياض",phone:"966578701979",desc:"شقة 3 غرف وصالة، مفروشة بالكامل، دور ثاني، قريبة من الخدمات. مساحة 140م",time:"الآن"},
+{cat:"سيارات",title:"تويوتا كامري 2023 LE - نظيفة جدا",price:"89,000 ر.س",img:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600",city:"جدة",phone:"966500000000",desc:"ماشية 32 الف، بدي وكالة",time:"قبل ساعة"},
+{cat:"أجهزة",title:"ايفون 15 برو ماكس 256 - تيتانيوم",price:"4,600 ر.س",img:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600",city:"الرياض",phone:"966500000000",desc:"جديد بكرتونه",time:"قبل 2 ساعة"},
+{cat:"عقارات",title:"ارض تجارية للبيع 900م على شارعين",price:"1,200,000 ر.س",img:"https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600",city:"الدمام",phone:"966500000000",desc:"على شارع 30 وشارع 20",time:"اليوم"},
+{cat:"أثاث",title:"غرفة نوم تركية 6 قطع - جديدة",price:"3,200 ر.س",img:"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600",city:"الرياض",phone:"966500000000",desc:"خشب تركي أصلي",time:"اليوم"}
+];
+function getAds(){let saved=JSON.parse(localStorage.getItem('makank_ads')||'[]');return [...saved,...defaultAds];}
+function getFavs(){return JSON.parse(localStorage.getItem('makank_favs')||'[]');}
+document.getElementById('catsBar').innerHTML=categories.map(c=>`<div class="cat-tab ${c===currentCat?'active':''}" onclick="setCat('${c}',this)">${c}</div>`).join('');
+function setCat(c,el){currentCat=c;if(el){document.querySelectorAll('.cat-tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');}renderAds();}
+function filterCity(city){currentCity=city;document.querySelectorAll('.f-pill').forEach(p=>p.classList.remove('active'));if(event)event.target.classList.add('active');renderAds();}
+function renderAds(){let all=getAds();let q=document.getElementById('searchInput').value.toLowerCase();let filtered=all.filter(a=>{let mc=currentCat==="الكل"||a.cat===currentCat;let mcity=currentCity==="الكل"||a.city===currentCity;let mq=!q||a.title.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q);return mc&&mcity&&mq;});document.getElementById('adsCount').innerText=`${filtered.length} إعلان`;document.getElementById('adsList').innerHTML=filtered.map(a=>`<div class="ad-card" onclick="openDetail('${a.title.replace(/'/g,"\\'")}')"><img src="${a.img}" onerror="this.src='https://via.placeholder.com/300'"><div class="ad-content"><div class="ad-title">${a.title}</div><div class="ad-footer"><div class="ad-meta"><span>📍 ${a.city}</span><span>🕒 ${a.time||'الآن'}</span></div>${a.price?`<div class="ad-price">${a.price}</div>`:''}</div><div class="ad-user-line"><span>${a.cat}</span></div></div></div>`).join('');}
+renderAds();
+function openDetail(t){let ad=getAds().find(x=>x.title===t);if(!ad)return;currentDetailAd=ad;document.getElementById('detailImg').src=ad.img;document.getElementById('detailTitle').innerText=ad.title;document.getElementById('detailPrice').innerText=ad.price||'عند التواصل';document.getElementById('detailMeta').innerText=`📍 ${ad.city} • ${ad.cat} • 🕒 ${ad.time||'الآن'}`;document.getElementById('detailDesc').innerText=ad.desc;document.getElementById('detailScreen').classList.add('active');}
+function openWhatsApp(){if(!currentDetailAd)return;let phone=currentDetailAd.phone||'966578701979';window.open('https://wa.me/'+phone+'?text=بخصوص: '+encodeURIComponent(currentDetailAd.title),'_blank')}
+function startChat(){alert('💬 تم فتح المحادثة')}
+function toggleFav(){if(!currentDetailAd)return;let favs=getFavs();let idx=favs.findIndex(f=>f.title===currentDetailAd.title);if(idx>-1){favs.splice(idx,1);alert('تم الحذف من المفضلة')}else{favs.push(currentDetailAd);alert('❤️ تمت الإضافة للمفضلة')}localStorage.setItem('makank_favs',JSON.stringify(favs));renderFavs();}
+function closeAllScreens(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'))}
+function openProfile(){loadProfileData();document.getElementById('profileScreen').classList.add('active')}
+function openFavs(){renderFavs();document.getElementById('favScreen').classList.add('active')}
+function openMessages(){document.getElementById('msgScreen').classList.add('active')}
+function openNotifs(){document.getElementById('notifScreen').classList.add('active')}
+function openAdd(){document.getElementById('addScreen').classList.add('active')}
+function directLogin(){let n=document.getElementById('userName').value.trim()||"باسم";let p=document.getElementById('userPhone').value.trim()||"0578701979";let e=document.getElementById('userEmail').value.trim()||"a@a.com";localStorage.setItem('makank_user',JSON.stringify({name:n,phone:p,email:e}));document.getElementById('loginScreen').style.display="none";loadProfileData();}
+function checkLogin(){if(localStorage.getItem('makank_user')){document.getElementById('loginScreen').style.display="none";loadProfileData()}}checkLogin();
+function loadProfileData(){let u=JSON.parse(localStorage.getItem('makank_user')||'{}');if(!u.name)return;document.getElementById('profileName').innerText=u.name;document.getElementById('pName').innerText="👤 "+u.name;document.getElementById('pPhone').innerText="📞 "+u.phone;document.getElementById('pEmail').innerText="✉️ "+u.email;document.getElementById('avatarLetter').innerText=u.name.charAt(0);}
+function logout(){localStorage.removeItem('makank_user');location.reload()}
+function publishAd(){let t=document.getElementById('adTitle').value.trim();let c=document.getElementById('adCat').value;let p=document.getElementById('adPrice').value.trim();let city=document.getElementById('adCity').value;let phone=document.getElementById('adPhone').value.trim();let desc=document.getElementById('adDesc').value.trim()||t;let img=document.getElementById('adImg').value.trim()||"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600";if(!t){alert('اكتب عنوان الإعلان');return}let newAd={cat:c,title:t,price:p? p+' ر.س':'عند التواصل',img:img,city:city,phone:phone||'966578701979',desc:desc,time:'الآن'};let saved=JSON.parse(localStorage.getItem('makank_ads')||'[]');saved.unshift(newAd);localStorage.setItem('makank_ads',JSON.stringify(saved));closeAllScreens();renderAds();alert('✅ تم نشر إعلانك');}
+function renderFavs(){let favs=getFavs();document.getElementById('favGrid').innerHTML=favs.map(a=>`<div class="ad-card" onclick="openDetail('${a.title.replace(/'/g,"\\'")}')"><img src="${a.img}"><div class="ad-content"><div class="ad-title">${a.title}</div><div class="ad-footer"><div class="ad-meta">📍 ${a.city}</div><div class="ad-price">${a.price||''}</div></div></div></div>`).join('');}
+</script>
+</body>
+</html>
