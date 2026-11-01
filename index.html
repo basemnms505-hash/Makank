@@ -1,0 +1,67 @@
+<!-- شريط أقسام مكانك - RTL -->
+<div dir="rtl" class="w-full bg-white rounded-[24px] p-3 shadow-sm">
+  <div class="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-1" style="scrollbar-width: none;">
+    
+    <!-- الرئيسية - نشطة -->
+    <button class="flex flex-col items-center justify-center min-w-[85px] h-[90px] bg-[#2563EB] text-white rounded-[24px] shadow-md">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="mt-2 text-[14px] font-bold">الرئيسية</span>
+    </button>
+
+    <!-- باقي الأقسام -->
+    <button class="cat-item">
+      <span class="icon">🚗</span><span>سيارات</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🏢</span><span>عقارات</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">📱</span><span>اجهزة</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🛋️</span><span>اثاث</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🔧</span><span>خدمات</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">👕</span><span>ازياء</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🐾</span><span>حيوانات</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">💼</span><span>وظائف</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🎮</span><span>العاب</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🎓</span><span>تدريب</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🍔</span><span>اطعمة</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">🎉</span><span>مناسبات</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">💻</span><span>برمجة</span>
+    </button>
+    <button class="cat-item">
+      <span class="icon">•••</span><span>المزيد</span>
+    </button>
+  </div>
+</div>
+
+<style>
+.cat-item{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-width:85px; height:90px; background:#fff; border-radius:24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07); border:1px solid #f1f1f1;
+  font-size:14px; font-weight:600; color:#1f2937; gap:4px;
+}
+.cat-item .icon{ font-size:22px; }
+.cat-item:hover{ background:#f8fafc; }
+.scrollbar-hide::-webkit-scrollbar{ display:none; }
+</style>
