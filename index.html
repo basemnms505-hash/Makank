@@ -1,0 +1,681 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#087f50">
+<title>مكانك | سوق مصر</title>
+
+<style>
+*{box-sizing:border-box}
+:root{
+ --green:#07834f;
+ --darkgreen:#05623c;
+ --bg:#f4f6f5;
+ --white:#fff;
+ --text:#202923;
+ --muted:#77827b;
+ --border:#e6ebe7;
+}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Tahoma,Arial,sans-serif;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.header{
+ background:linear-gradient(135deg,#087e4c,#075b39);
+ color:white;padding:16px max(16px,calc((100% - 1100px)/2));
+}
+.header-top{
+ display:flex;justify-content:space-between;
+ align-items:center;gap:12px;flex-wrap:wrap;
+}
+.logo{font-size:27px;font-weight:900}
+.logo small{display:block;font-size:12px;font-weight:normal;margin-top:4px}
+.user-area{display:flex;align-items:center;gap:8px;font-size:13px}
+.white-btn{
+ border:0;border-radius:9px;padding:9px 13px;
+ background:white;color:var(--green);font-weight:bold;
+}
+.search-area{
+ max-width:1100px;margin:18px auto 0;
+ display:flex;gap:8px;
+}
+.search-area input{
+ flex:1;min-width:0;padding:14px;border:0;
+ border-radius:10px;outline:none;
+}
+.search-area button{
+ background:#f5c542;color:#222;border:0;
+ border-radius:10px;padding:0 20px;font-weight:bold;
+}
+.container{max-width:1100px;margin:auto;padding:15px}
+.category-title{font-size:17px;font-weight:bold;margin:8px 0}
+.categories{
+ display:flex;gap:9px;overflow-x:auto;
+ padding:5px 0 13px;scrollbar-width:none;
+}
+.categories::-webkit-scrollbar{display:none}
+.cat{
+ flex-shrink:0;background:white;border:1px solid var(--border);
+ border-radius:12px;padding:12px 16px;
+ font-size:13px;font-weight:bold;cursor:pointer;
+}
+.cat.active{background:var(--green);color:white;border-color:var(--green)}
+.cat span{display:block;font-size:21px;margin-bottom:5px;text-align:center}
+.tabs{
+ display:flex;gap:7px;margin:8px 0 15px;
+}
+.tab{
+ flex:1;border:0;background:white;border-radius:10px;
+ padding:13px 5px;font-weight:bold;color:#555;
+}
+.tab.active{background:var(--green);color:white}
+.panel{
+ background:white;padding:15px;border-radius:14px;
+ border:1px solid var(--border);margin-bottom:15px;
+}
+.filters{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:9px;
+}
+.field{
+ width:100%;padding:12px;border:1px solid var(--border);
+ border-radius:9px;background:#fff;outline:none;
+}
+.field:focus{border-color:var(--green)}
+.results-head{
+ display:flex;justify-content:space-between;
+ align-items:center;margin:18px 0 12px;
+}
+.muted{color:var(--muted);font-size:13px}
+.ads-grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:14px;
+}
+.ad-card{
+ background:white;border-radius:13px;overflow:hidden;
+ border:1px solid var(--border);position:relative;
+}
+.ad-image{
+ width:100%;height:190px;object-fit:cover;
+ background:#e8eeea;display:block;cursor:pointer;
+}
+.no-image{
+ height:190px;display:flex;align-items:center;
+ justify-content:center;background:#edf3ef;
+ color:#8b9b90;font-size:48px;
+}
+.ad-info{padding:12px}
+.ad-title{
+ font-weight:bold;font-size:15px;line-height:1.7;
+ cursor:pointer;margin:4px 0;
+}
+.price{font-size:18px;font-weight:900;color:var(--green);margin:7px 0}
+.ad-meta{
+ display:flex;justify-content:space-between;
+ gap:5px;color:var(--muted);font-size:12px;
+ margin-top:9px;
+}
+.ad-actions{display:flex;gap:7px;margin-top:12px}
+.action{
+ flex:1;border:0;border-radius:8px;padding:10px 5px;
+ background:#eaf5ee;color:var(--green);font-weight:bold;
+}
+.favorite{
+ position:absolute;top:10px;left:10px;
+ width:36px;height:36px;border:0;border-radius:50%;
+ background:white;font-size:20px;
+}
+.favorite.active{color:#e33}
+.badge{
+ display:inline-block;background:#e8f5ed;color:var(--green);
+ border-radius:20px;padding:5px 9px;font-size:11px;
+}
+.hidden{display:none!important}
+.primary{
+ background:var(--green);color:white;border:0;
+ border-radius:9px;padding:13px 18px;font-weight:bold;
+}
+.danger{background:#dc3545;color:white}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-grid .full{grid-column:1/-1}
+textarea.field{resize:vertical}
+.preview{
+ display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;
+}
+.preview img{
+ width:85px;height:85px;object-fit:cover;border-radius:9px;
+}
+.empty{
+ background:white;text-align:center;padding:45px 10px;
+ border-radius:14px;color:var(--muted);
+}
+.empty b{display:block;font-size:20px;color:var(--text);margin:10px}
+.modal{
+ position:fixed;inset:0;background:#0009;z-index:20;
+ display:flex;align-items:center;justify-content:center;
+ padding:15px;
+}
+.modal-box{
+ background:white;width:100%;max-width:600px;
+ max-height:90vh;overflow:auto;border-radius:15px;padding:18px;
+}
+.modal-box img{width:100%;max-height:300px;object-fit:contain;background:#eee;border-radius:10px}
+.footer{
+ text-align:center;color:#888;padding:30px 10px;font-size:12px;
+}
+@media(max-width:750px){
+ .ads-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .ad-image,.no-image{height:145px}
+ .filters{grid-template-columns:1fr 1fr}
+}
+@media(max-width:430px){
+ .ads-grid{grid-template-columns:1fr 1fr}
+ .ad-title{font-size:13px}
+ .price{font-size:15px}
+ .ad-info{padding:9px}
+ .form-grid{grid-template-columns:1fr}
+ .form-grid .full{grid-column:auto}
+ .search-area button{padding:0 12px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+ <div class="header-top">
+  <div class="logo">📍 مكانك
+   <small>سوق مصر للبيع والشراء</small>
+  </div>
+  <div class="user-area">
+   <span id="userName"></span>
+   <button class="white-btn" id="logoutBtn">خروج</button>
+  </div>
+ </div>
+
+ <div class="search-area">
+  <input id="searchInput" placeholder="بتدور على إيه؟ سيارة، شقة، موبايل...">
+  <button id="searchBtn">بحث</button>
+ </div>
+</header>
+
+<main class="container">
+
+ <div class="category-title">تصفح الأقسام</div>
+
+ <div class="categories" id="categories">
+  <div class="cat active" data-cat=""><span>🏠</span>الكل</div>
+  <div class="cat" data-cat="سيارات"><span>🚗</span>سيارات</div>
+  <div class="cat" data-cat="عقارات"><span>🏡</span>عقارات</div>
+  <div class="cat" data-cat="وظائف"><span>💼</span>وظائف</div>
+  <div class="cat" data-cat="موبايلات"><span>📱</span>موبايلات</div>
+  <div class="cat" data-cat="إلكترونيات"><span>💻</span>إلكترونيات</div>
+  <div class="cat" data-cat="أثاث"><span>🛋️</span>أثاث</div>
+  <div class="cat" data-cat="ملابس"><span>👕</span>ملابس</div>
+  <div class="cat" data-cat="خدمات"><span>🛠️</span>خدمات</div>
+  <div class="cat" data-cat="أخرى"><span>📦</span>أخرى</div>
+ </div>
+
+ <div class="tabs">
+  <button class="tab active" id="tabAll">كل الإعلانات</button>
+  <button class="tab" id="tabFav">المفضلة ❤️</button>
+  <button class="tab" id="tabMy">إعلاناتي</button>
+  <button class="tab" id="tabAdd">＋ إعلان</button>
+ </div>
+
+ <section id="allSection">
+  <div class="panel">
+   <div class="filters">
+    <select id="filterCity" class="field">
+     <option value="">كل المحافظات</option>
+    </select>
+    <input id="minPrice" class="field" type="number" placeholder="أقل سعر">
+    <input id="maxPrice" class="field" type="number" placeholder="أعلى سعر">
+   </div>
+  </div>
+  <div class="results-head">
+   <b id="resultsCount">الإعلانات</b>
+   <select id="sortAds" class="field" style="width:auto">
+    <option value="new">الأحدث أولاً</option>
+    <option value="low">السعر الأقل</option>
+    <option value="high">السعر الأعلى</option>
+   </select>
+  </div>
+  <div id="adsContainer" class="ads-grid"></div>
+ </section>
+
+ <section id="mySection" class="hidden">
+  <h3>إعلاناتي</h3>
+  <div id="myAds" class="ads-grid"></div>
+ </section>
+
+ <section id="favSection" class="hidden">
+  <h3>إعلاناتي المفضلة ❤️</h3>
+  <div id="favAds" class="ads-grid"></div>
+ </section>
+
+ <section id="addSection" class="hidden">
+  <div class="panel">
+   <h3>📢 انشر إعلانك في مكانك</h3>
+   <div class="form-grid">
+    <input id="fTitle" class="field full" placeholder="عنوان الإعلان">
+    <input id="fPrice" class="field" type="number" min="0" placeholder="السعر بالجنيه المصري">
+    <select id="fCat" class="field">
+     <option value="">اختر القسم</option>
+     <option>سيارات</option><option>عقارات</option>
+     <option>وظائف</option><option>موبايلات</option>
+     <option>إلكترونيات</option><option>أثاث</option>
+     <option>ملابس</option><option>خدمات</option><option>أخرى</option>
+    </select>
+    <select id="fCity" class="field full">
+     <option value="">اختر المحافظة</option>
+    </select>
+    <input id="fArea" class="field full" placeholder="المنطقة أو الحي (اختياري)">
+    <textarea id="fDesc" class="field full" rows="4" placeholder="اكتب تفاصيل الإعلان..."></textarea>
+    <input id="fImage" class="field full" type="file" accept="image/*" multiple>
+   </div>
+   <div class="muted">يمكنك اختيار حتى 5 صور، بحد أقصى 4 ميجابايت للصورة.</div>
+   <div id="imgPreview" class="preview"></div>
+   <div id="addMsg" class="muted"></div>
+   <button id="publishBtn" class="primary" style="width:100%;margin-top:12px">
+    نشر الإعلان 🚀
+   </button>
+  </div>
+ </section>
+
+</main>
+
+<div id="detailsModal" class="modal hidden">
+ <div class="modal-box">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+   <b>تفاصيل الإعلان</b>
+   <button id="closeModal" class="primary">إغلاق ✕</button>
+  </div>
+  <div id="detailsContent" style="margin-top:15px"></div>
+ </div>
+</div>
+
+<footer class="footer">
+ مكانك © 2026 - سوق الإعلانات المصري
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<script>
+/* بيانات الدخول */
+let user=null;
+try{
+ user=JSON.parse(localStorage.getItem("user")||"null");
+}catch(e){}
+
+if(!user){
+ location.href="index.html";
+}else{
+ document.getElementById("userName").textContent="أهلاً "+(user.name||"");
+}
+
+document.getElementById("logoutBtn").onclick=()=>{
+ localStorage.removeItem("user");
+ location.href="index.html";
+};
+
+/* المحافظات المصرية */
+const cities=[
+"القاهرة","الجيزة","الإسكندرية","الدقهلية","الشرقية",
+"الغربية","المنوفية","القليوبية","البحيرة","كفر الشيخ",
+"دمياط","بورسعيد","الإسماعيلية","السويس","الفيوم",
+"بني سويف","المنيا","أسيوط","سوهاج","قنا","الأقصر",
+"أسوان","البحر الأحمر","مطروح","شمال سيناء",
+"جنوب سيناء","الوادي الجديد"
+];
+
+cities.forEach(city=>{
+ document.getElementById("filterCity").add(new Option(city,city));
+ document.getElementById("fCity").add(new Option(city,city));
+});
+
+/* Firebase */
+let db=null,storage=null;
+try{
+ firebase.initializeApp({
+  apiKey:"AIzaSyDMEEIf_ZolyqRvQGOxMj4apSJAnwIom1w",
+  authDomain:"makank-48b39.firebaseapp.com",
+  projectId:"makank-48b39",
+  storageBucket:"makank-48b39.firebasestorage.app",
+  messagingSenderId:"925625587864",
+  appId:"1:925625587864:web:f17ef5be707a7be91598ed",
+  measurementId:"G-ZJX8XKD6ZZ"
+ });
+ db=firebase.firestore();
+ storage=firebase.storage();
+}catch(e){
+ alert("تعذر الاتصال بخدمات Firebase");
+}
+
+let allAds=[];
+let selectedCat="";
+let selectedImages=[];
+let currentTab="all";
+let favorites=JSON.parse(localStorage.getItem("makankFavs")||"[]");
+
+/* حماية النصوص المعروضة */
+function safe(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+function money(v){
+ return Number(v||0).toLocaleString("ar-EG")+" جنيه";
+}
+
+/* التنقل */
+function showTab(tab){
+ currentTab=tab;
+ ["all","my","fav","add"].forEach(t=>{
+  document.getElementById(t+"Section")?.classList.toggle("hidden",t!==tab);
+  document.getElementById(
+   {all:"tabAll",my:"tabMy",fav:"tabFav",add:"tabAdd"}[t]
+  ).classList.toggle("active",t===tab);
+ });
+ if(tab==="my") renderMy();
+ if(tab==="fav") renderFav();
+}
+
+document.getElementById("tabAll").onclick=()=>showTab("all");
+document.getElementById("tabMy").onclick=()=>showTab("my");
+document.getElementById("tabFav").onclick=()=>showTab("fav");
+document.getElementById("tabAdd").onclick=()=>showTab("add");
+
+/* اختيار القسم */
+document.querySelectorAll(".cat").forEach(el=>{
+ el.onclick=()=>{
+  document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));
+  el.classList.add("active");
+  selectedCat=el.dataset.cat;
+  render();
+ };
+});
+
+/* البحث والتصفية */
+["searchInput","filterCity","minPrice","maxPrice","sortAds"].forEach(id=>{
+ document.getElementById(id).addEventListener(
+  id==="searchInput"?"input":"change",render
+ );
+});
+
+document.getElementById("searchBtn").onclick=render;
+
+function filterAds(list){
+ let q=document.getElementById("searchInput").value.trim().toLowerCase();
+ let city=document.getElementById("filterCity").value;
+ let min=Number(document.getElementById("minPrice").value)||0;
+ let max=Number(document.getElementById("maxPrice").value)||Infinity;
+
+ return list.filter(a=>{
+  let text=((a.title||"")+" "+(a.desc||"")+" "+(a.area||"")).toLowerCase();
+  if(q&&!text.includes(q))return false;
+  if(city&&a.city!==city)return false;
+  if(selectedCat&&a.category!==selectedCat)return false;
+  let p=Number(a.price)||0;
+  if(min&&p<min)return false;
+  if(max!==Infinity&&p>max)return false;
+  return true;
+ }).sort((a,b)=>{
+  let sort=document.getElementById("sortAds").value;
+  if(sort==="low")return Number(a.price)-Number(b.price);
+  if(sort==="high")return Number(b.price)-Number(a.price);
+  return Number(b.createdAtNum||0)-Number(a.createdAtNum||0);
+ });
+}
+
+/* بطاقة الإعلان */
+function cardHtml(a){
+ let id=safe(a.id);
+ let img=a.images?.[0]||a.image||"";
+ let liked=favorites.includes(a.id);
+
+ return `
+ <article class="ad-card">
+  ${img?
+   `<img class="ad-image" data-detail="${id}" src="${safe(img)}" loading="lazy">`:
+   `<div class="no-image" data-detail="${id}">📦</div>`
+  }
+  <button class="favorite ${liked?"active":""}" data-fav="${id}">
+   ${liked?"♥":"♡"}
+  </button>
+  <div class="ad-info">
+   <span class="badge">${safe(a.category||"أخرى")}</span>
+   <div class="ad-title" data-detail="${id}">${safe(a.title)}</div>
+   <div class="price">${money(a.price)}</div>
+   <div class="ad-meta">
+    <span>📍 ${safe(a.city)} ${safe(a.area||"")}</span>
+   </div>
+   <div class="ad-actions">
+    <button class="action" data-detail="${id}">التفاصيل</button>
+    <button class="action" data-whatsapp="${id}">واتساب</button>
+   </div>
+  </div>
+ </article>`;
+}
+
+/* عرض الإعلانات */
+function render(){
+ let list=filterAds(allAds);
+ document.getElementById("resultsCount").textContent=
+  "عدد الإعلانات: "+list.length;
+ document.getElementById("adsContainer").innerHTML=
+  list.map(cardHtml).join("")||
+  '<div class="empty" style="grid-column:1/-1">🔍<b>لا توجد إعلانات</b>جرب تغيير البحث أو القسم</div>';
+}
+
+function renderMy(){
+ let list=filterAds(allAds.filter(a=>a.ownerPhone===user.phone));
+ document.getElementById("myAds").innerHTML=
+ list.map(a=>cardHtml(a).replace(
+  '</div>\n </article>',
+  `<button class="action danger" data-delete="${safe(a.id)}">حذف الإعلان</button></div></article>`
+ )).join("")||
+ '<div class="empty" style="grid-column:1/-1">ليس لديك إعلانات حتى الآن</div>';
+}
+
+function renderFav(){
+ let list=allAds.filter(a=>favorites.includes(a.id));
+ document.getElementById("favAds").innerHTML=
+ list.map(cardHtml).join("")||
+ '<div class="empty" style="grid-column:1/-1">لم تضف إعلانات للمفضلة بعد ❤️</div>';
+}
+
+/* التفاعل مع البطاقات */
+document.addEventListener("click",e=>{
+ let detail=e.target.closest("[data-detail]");
+ if(detail){openDetails(detail.dataset.detail);return;}
+
+ let fav=e.target.closest("[data-fav]");
+ if(fav){
+  let id=fav.dataset.fav;
+  favorites=favorites.includes(id)?
+   favorites.filter(x=>x!==id):[...favorites,id];
+  localStorage.setItem("makankFavs",JSON.stringify(favorites));
+  render();
+  if(currentTab==="fav")renderFav();
+  if(currentTab==="my")renderMy();
+  return;
+ }
+
+ let wa=e.target.closest("[data-whatsapp]");
+ if(wa){
+  let ad=allAds.find(x=>x.id===wa.dataset.whatsapp);
+  if(ad)contactOwner(ad.ownerPhone);
+  return;
+ }
+
+ let del=e.target.closest("[data-delete]");
+ if(del)delAd(del.dataset.delete);
+});
+
+/* تفاصيل الإعلان */
+function openDetails(id){
+ let a=allAds.find(x=>x.id===id);
+ if(!a)return;
+
+ let imgs=a.images?.length?a.images:(a.image?[a.image]:[]);
+ document.getElementById("detailsContent").innerHTML=`
+  ${imgs.map(x=>`<img src="${safe(x)}" style="margin-bottom:8px">`).join("")}
+  <h2>${safe(a.title)}</h2>
+  <div class="price">${money(a.price)}</div>
+  <p>القسم: ${safe(a.category)}</p>
+  <p>المحافظة: ${safe(a.city)} - ${safe(a.area||"")}</p>
+  <p style="white-space:pre-wrap">${safe(a.desc)}</p>
+  <hr>
+  <p>البائع: ${safe(a.ownerName)}</p>
+  <button class="primary" id="detailWhatsapp" style="width:100%">تواصل مع البائع عبر واتساب</button>
+ `;
+ document.getElementById("detailWhatsapp").onclick=()=>contactOwner(a.ownerPhone);
+ document.getElementById("detailsModal").classList.remove("hidden");
+}
+
+document.getElementById("closeModal").onclick=()=>{
+ document.getElementById("detailsModal").classList.add("hidden");
+};
+
+/* واتساب */
+function contactOwner(phone){
+ let p=String(phone||"").replace(/\D/g,"");
+ if(p.startsWith("0"))p="20"+p.substring(1);
+ else if(!p.startsWith("20"))p="20"+p;
+ if(p.length<12){alert("رقم البائع غير صحيح");return;}
+ window.open("https://wa.me/"+p,"_blank");
+}
+
+/* معاينة الصور */
+document.getElementById("fImage").onchange=e=>{
+ selectedImages=Array.from(e.target.files);
+ let box=document.getElementById("imgPreview");
+ box.innerHTML="";
+
+ if(selectedImages.length>5){
+  selectedImages=[];
+  e.target.value="";
+  alert("مسموح بخمس صور فقط");
+  return;
+ }
+
+ if(selectedImages.some(f=>f.size>4*1024*1024)){
+  selectedImages=[];
+  e.target.value="";
+  alert("حجم الصورة يجب ألا يتجاوز 4 ميجابايت");
+  return;
+ }
+
+ selectedImages.forEach(file=>{
+  if(!file.type.startsWith("image/"))return;
+  let img=document.createElement("img");
+  img.src=URL.createObjectURL(file);
+  box.appendChild(img);
+ });
+};
+
+/* نشر الإعلان */
+document.getElementById("publishBtn").onclick=async()=>{
+ let title=document.getElementById("fTitle").value.trim();
+ let price=document.getElementById("fPrice").value;
+ let cat=document.getElementById("fCat").value;
+ let city=document.getElementById("fCity").value;
+ let area=document.getElementById("fArea").value.trim();
+ let desc=document.getElementById("fDesc").value.trim();
+ let msg=document.getElementById("addMsg");
+ let btn=document.getElementById("publishBtn");
+
+ if(!title||!cat||!city){
+  msg.textContent="⚠️ اكتب العنوان واختر القسم والمحافظة";
+  return;
+ }
+ if(price!==""&&Number(price)<0){
+  msg.textContent="السعر غير صحيح";
+  return;
+ }
+ if(!db||!storage){
+  msg.textContent="خدمات Firebase غير متاحة";
+  return;
+ }
+
+ btn.disabled=true;
+ btn.textContent="جاري النشر...";
+ msg.textContent="";
+
+ try{
+  let urls=[];
+
+  for(let i=0;i<selectedImages.length;i++){
+   let file=selectedImages[i];
+   let path="ads/"+Date.now()+"_"+i+"_"+file.name.replace(/[^\w.-]/g,"_");
+   let ref=storage.ref().child(path);
+   let result=await ref.put(file);
+   urls.push(await result.ref.getDownloadURL());
+  }
+
+  await db.collection("ads").add({
+   title,price,desc,city,area,category:cat,
+   images:urls,image:urls[0]||"",
+   ownerName:user.name||"",
+   ownerPhone:user.phone||"",
+   ownerEmail:user.email||"",
+   createdAt:new Date().toISOString(),
+   createdAtNum:Date.now()
+  });
+
+  ["fTitle","fPrice","fDesc","fArea","fCity","fCat","fImage"].forEach(id=>{
+   document.getElementById(id).value="";
+  });
+
+  selectedImages=[];
+  document.getElementById("imgPreview").innerHTML="";
+  msg.textContent="✅ تم نشر إعلانك بنجاح";
+  showTab("all");
+
+ }catch(err){
+  msg.textContent="تعذر النشر: "+err.message;
+ }finally{
+  btn.disabled=false;
+  btn.textContent="نشر الإعلان 🚀";
+ }
+};
+
+/* حذف الإعلان */
+async function delAd(id){
+ let a=allAds.find(x=>x.id===id);
+ if(!a||a.ownerPhone!==user.phone){
+  alert("لا يمكنك حذف هذا الإعلان");
+  return;
+ }
+ if(!confirm("هل تريد حذف الإعلان؟"))return;
+
+ try{
+  await db.collection("ads").doc(id).delete();
+ }catch(e){
+  alert("تعذر الحذف: "+e.message);
+ }
+}
+
+/* استقبال الإعلانات */
+if(db){
+ db.collection("ads").orderBy("createdAtNum","desc")
+ .onSnapshot(snap=>{
+  allAds=snap.docs.map(doc=>({...doc.data(),id:doc.id}));
+  render();
+  if(currentTab==="my")renderMy();
+  if(currentTab==="fav")renderFav();
+ },err=>{
+  document.getElementById("adsContainer").innerHTML=
+   '<div class="empty" style="grid-column:1/-1">تعذر تحميل الإعلانات. راجع صلاحيات Firebase.</div>';
+ });
+}
+</script>
+</body>
+</html>
