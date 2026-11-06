@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكانك | سوق الرياض</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<style>body{font-family:'Tajawal',sans-serif} .no-scrollbar::-webkit-scrollbar{display:none} .page{display:none} .page.active{display:block}</style>
+</head>
+<body class="bg-[#F2F2F2]">
+
+<header class="bg-white shadow sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-3 py-3">
+    <div class="flex items-center gap-2">
+      <div onclick="showPage('home')" class="cursor-pointer text-xl font-extrabold text-[#0F2A44]">مكانك <span class="text-[10px] bg-teal-500 text-white px-2 py-1 rounded">MAKANK • LIVE</span></div>
+      <div class="flex-1 flex bg-gray-100 rounded-full overflow-hidden border">
+        <input id="searchInput" oninput="render()" placeholder="ابحث في مكانك..." class="flex-1 bg-transparent px-3 py-2.5 outline-none text-sm min-w-0">
+        <button onclick="doSearch()" class="bg-[#0F2A44] text-white px-4 text-sm font-bold shrink-0">بحث</button>
+      </div>
+      <button onclick="checkLoginForAdd()" class="hidden md:block bg-green-600 text-white px-4 py-2.5 rounded-full font-bold text-sm shrink-0">+ أضف إعلانك</button>
+      <button id="loginBtn" onclick="openLogin()" class="bg-gray-100 px-3 py-2.5 rounded-full font-bold text-sm shrink-0">دخول</button>
+      <button id="myStoreBtn" onclick="showPage('mystore')" class="hidden bg-[#0F2A44] text-white px-3 py-2.5 rounded-full font-bold text-sm shrink-0">متجري</button>
+    </div>
+    <div class="flex gap-2 mt-3 overflow-x-auto no-scrollbar text-sm whitespace-nowrap">
+      <button onclick="filterCat('الكل')" class="cat-btn bg-[#0F2A44] text-white px-4 py-1.5 rounded-full shrink-0">الكل</button>
+      <button onclick="filterCat('سيارات')" class="cat-btn bg-gray-100 px-4 py-1.5 rounded-full shrink-0">🚗 سيارات</button>
+      <button onclick="filterCat('عقار')" class="cat-btn bg-gray-100 px-4 py-1.5 rounded-full shrink-0">🏠 عقار</button>
+      <button onclick="filterCat('جوالات')" class="cat-btn bg-gray-100 px-4 py-1.5 rounded-full shrink-0">📱 جوالات</button>
+      <button onclick="filterCat('كمبيوتر')" class="cat-btn bg-gray-100 px-4 py-1.5 rounded-full shrink-0">💻 كمبيوتر</button>
+      <button onclick="filterCat('محلات')" class="cat-btn bg-gray-100 px-4 py-1.5 rounded-full shrink-0">📍 محلات</button>
+    </div>
+  </div>
+</header>
+
+<div id="page-home" class="page active">
+  <div class="max-w-6xl mx-auto px-3 mt-4">
+    <div class="bg-[#0F2A44] text-white rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div><h1 class="text-2xl md:text-3xl font-extrabold">بيع واشتري في الرياض - الكل شايفك</h1><p class="text-slate-300 text-sm mt-1">انشر إعلانك، هيظهر عند كل الناس فوراً زي حراج بالظبط.</p><p class="text-xs text-teal-300 mt-1">● <span id="liveCount">0</span> إعلان أونلاين الآن</p></div>
+      <button onclick="checkLoginForAdd()" class="bg-teal-500 px-6 py-3 rounded-full font-bold shrink-0">أضف إعلانك مجاناً</button>
+    </div>
+  </div>
+  <main class="max-w-6xl mx-auto px-3 py-5">
+    <div class="flex items-center justify-between"><h2 class="font-extrabold text-xl">أحدث الإعلانات</h2><select id="cityFilter" onchange="render()" class="bg-white border rounded-full px-3 py-1.5 text-sm"><option>كل المدن</option><option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة</option></select></div>
+    <div id="adsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-4"><p class="col-span-full text-center py-10 text-slate-400">جاري تحميل الإعلانات من السيرفر...</p></div>
+  </main>
+</div>
+
+<div id="page-mystore" class="page">
+  <div class="max-w-6xl mx-auto px-3 py-5">
+    <div class="bg-white rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center">
+      <div class="w-20 h-20 bg-teal-500 rounded-full text-white text-3xl flex items-center justify-center font-extrabold shrink-0" id="storeAvatar">ب</div>
+      <div class="flex-1 text-center md:text-right"><h2 class="text-2xl font-extrabold" id="storeName">متجر باسم</h2><p class="text-slate-500 text-sm" id="storePhone">0578701979 • الرياض</p><div class="flex gap-2 justify-center md:justify-start mt-2"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">✅ موثق</span><span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold">⭐ 4.9</span></div></div>
+      <div class="flex gap-2"><button onclick="checkLoginForAdd()" class="bg-green-600 text-white px-5 py-2.5 rounded-full font-bold text-sm">+ إعلان جديد</button><button onclick="logout()" class="bg-red-50 text-red-600 px-4 py-2.5 rounded-full font-bold text-sm">خروج</button></div>
+    </div>
+    <div class="grid grid-cols-3 gap-3 mt-4"><div class="bg-white rounded-2xl p-4 text-center"><p class="text-2xl font-extrabold" id="myCount">0</p><p class="text-slate-500 text-xs">إعلاناتي</p></div><div class="bg-white rounded-2xl p-4 text-center"><p class="text-2xl font-extrabold text-teal-600" id="allCount">0</p><p class="text-slate-500 text-xs">إجمالي السوق</p></div><div class="bg-white rounded-2xl p-4 text-center"><p class="text-2xl font-extrabold text-amber-500">340</p><p class="text-slate-500 text-xs">محادثات</p></div></div>
+    <h3 class="font-extrabold text-lg mt-6">إعلاناتي</h3>
+    <div id="myAdsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3"></div>
+  </div>
+</div>
+
+<button onclick="checkLoginForAdd()" class="fixed bottom-5 left-5 bg-green-600 text-white w-14 h-14 rounded-full text-3xl shadow-lg z-50">+</button>
+
+<div id="loginModal" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-end md:items-center justify-center"><div class="bg-white w-full max-w-md rounded-t-3xl md:rounded-3xl p-6"><div class="flex justify-between"><h3 class="font-extrabold text-xl">دخول مكانك</h3><button onclick="closeLogin()" class="text-xl">✕</button></div><input id="loginName" placeholder="اسمك" class="w-full border rounded-xl px-3 py-3 mt-4"><input id="loginPhone" placeholder="رقم الجوال - 0578701979" class="w-full border rounded-xl px-3 py-3 mt-2"><button onclick="doLogin()" class="w-full bg-[#0F2A44] text-white py-3.5 rounded-full font-bold mt-4">دخول / إنشاء حساب</button></div></div>
+
+<div id="addModal" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-end md:items-center justify-center"><div class="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl p-5 max-h-[90vh] overflow-auto"><div class="flex justify-between"><h3 class="font-extrabold text-lg">أضف إعلانك - هيظهر للكل</h3><button onclick="closeAdd()" class="text-xl">✕</button></div><input id="fTitle" placeholder="عنوان الإعلان" class="w-full border rounded-xl px-3 py-3 mt-4"><div class="grid grid-cols-2 gap-2 mt-2"><input id="fPrice" type="number" placeholder="السعر" class="border rounded-xl px-3 py-3"><select id="fCat" class="border rounded-xl px-3 py-3"><option>سيارات</option><option>عقار</option><option>جوالات</option><option>كمبيوتر</option><option>محلات</option></select></div><input id="fCity" placeholder="المدينة - الرياض" class="w-full border rounded-xl px-3 py-3 mt-2" value="الرياض"><input id="fNeighborhood" placeholder="الحي - مثلا: العليا، النرجس" class="w-full border rounded-xl px-3 py-3 mt-2"><label class="block mt-3 border-2 border-dashed rounded-xl p-4 text-center cursor-pointer bg-gray-50"><span class="text-3xl">📷</span><span class="block font-bold text-sm mt-1">اضغط لاختيار صورة الاعلان</span><span class="block text-xs text-slate-400">هتظهر في الكارت بدل الايموجي</span><input id="fImage" type="file" accept="image/*" class="hidden" onchange="previewImage(event)"><img id="imgPreview" class="hidden w-full h-40 object-cover rounded-xl mt-2"></label><textarea id="fDesc" placeholder="وصف الإعلان..." class="w-full border rounded-xl px-3 py-3 mt-2"></textarea><button onclick="addAd()" class="w-full bg-green-600 text-white py-3.5 rounded-full font-bold mt-3">انشر الآن للكل</button></div></div>
+
+<footer class="text-center text-slate-400 text-sm py-6">© 2026 مكانك - Makank | باسم السيد محمد عبدالعظيم - الرياض<br>واتساب: 0578701979</footer>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDMEEIf_ZolyqRvQGOxMj4apSJAnwIom1w",
+  authDomain: "makank-48b39.firebaseapp.com",
+  projectId: "makank-48b39",
+  storageBucket: "makank-48b39.firebasestorage.app",
+  messagingSenderId: "925625587864",
+  appId: "1:925625587864:web:1154dcf15834b9441598ed",
+  measurementId: "G-9ER57R2B3R"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+let user = JSON.parse(localStorage.getItem('makank_user')||'null');
+let ads = [];
+let currentCat="الكل";
+let selectedImage = "";
+
+db.collection("ads").orderBy("createdAt","desc").onSnapshot((snap)=>{
+  ads = snap.docs.map(d=>({id:d.id, ...d.data()}));
+  document.getElementById('liveCount').textContent = ads.length;
+  document.getElementById('allCount').textContent = ads.length;
+  render(); renderMy();
+}, (err)=>{ console.log(err); alert('مشكلة في الاتصال: ' + err.message); });
+
+function showPage(p){ document.querySelectorAll('.page').forEach(e=>e.classList.remove('active')); document.getElementById('page-'+p).classList.add('active'); if(p==='mystore') renderMy(); window.scrollTo(0,0); }
+function updateAuthUI(){ if(user){ document.getElementById('loginBtn').classList.add('hidden'); document.getElementById('myStoreBtn').classList.remove('hidden'); document.getElementById('storeName').textContent='متجر '+user.name; document.getElementById('storePhone').textContent=user.phone+' • الرياض'; document.getElementById('storeAvatar').textContent=user.name.charAt(0); } else { document.getElementById('loginBtn').classList.remove('hidden'); document.getElementById('myStoreBtn').classList.add('hidden'); } }
+function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); }
+function closeLogin(){ document.getElementById('loginModal').classList.add('hidden'); }
+function doLogin(){ let n=document.getElementById('loginName').value.trim(); let ph=document.getElementById('loginPhone').value.trim(); if(!n||!ph) return alert('اكتب اسمك ورقم جوالك'); user={name:n, phone:ph}; localStorage.setItem('makank_user', JSON.stringify(user)); closeLogin(); updateAuthUI(); showPage('mystore'); alert('أهلاً بيك يا '+n+' 🎉'); }
+function logout(){ localStorage.removeItem('makank_user'); user=null; updateAuthUI(); showPage('home'); }
+function checkLoginForAdd(){ if(!user){ alert('سجّل دخول الأول'); openLogin(); return; } openAdd(); }
+function openAdd(){ document.getElementById('addModal').classList.remove('hidden'); }
+function closeAdd(){ document.getElementById('addModal').classList.add('hidden'); }
+function filterCat(c){ currentCat=c; showPage('home'); render(); }
+function doSearch(){ showPage('home'); render(); }
+function getImg(cat){ if(cat==='سيارات') return '🚗'; if(cat==='عقار') return '🏠'; if(cat==='جوالات') return '📱'; if(cat==='كمبيوتر') return '💻'; if(cat==='محلات') return '📍'; return '📦'; }
+function getCardImage(a){
+  if(a.image && a.image.startsWith('data:image')) return `<img src="${a.image}" class="w-full h-40 object-cover">`;
+  if(a.image && a.image.startsWith('http')) return `<img src="${a.image}" class="w-full h-40 object-cover">`;
+  return `<div class="bg-gray-100 text-5xl text-center py-6">${getImg(a.cat)}</div>`;
+}
+function previewImage(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      const maxW = 800; const scale = Math.min(1, maxW / img.width);
+      canvas.width = img.width * scale; canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      selectedImage = canvas.toDataURL('image/jpeg', 0.7);
+      const p = document.getElementById('imgPreview'); p.src = selectedImage; p.classList.remove('hidden');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function render(){
+  let q=document.getElementById('searchInput').value.toLowerCase(); let city=document.getElementById('cityFilter').value;
+  let list=ads.filter(a=>(currentCat==='الكل'||a.cat===currentCat)&&(city==='كل المدن'||(a.city||'').includes(city))&&(a.title||'').toLowerCase().includes(q));
+  document.getElementById('adsGrid').innerHTML=list.map(a=>`
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border flex flex-col">
+      ${getCardImage(a)}
+      <div class="p-3 flex flex-col flex-1"><h3 class="font-bold text-sm leading-5 overflow-hidden" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${a.title}</h3><p class="text-teal-600 font-extrabold mt-1">${(a.price||0).toLocaleString()} ر.س</p><p class="text-xs text-slate-400 mt-1">${a.city||'الرياض'} • ${a.cat||'عام'}${a.neighborhood ? ' • '+a.neighborhood : ''}</p><a href="https://wa.me/966${(a.ownerPhone||'578701979').replace(/^0/,'')}?text=عايز ${encodeURIComponent(a.title)}" class="block text-center bg-[#0F2A44] text-white py-2 rounded-full text-sm mt-auto pt-2 font-bold">تواصل / شراء</a></div>
+    </div>`).join('') || '<p class="col-span-full text-center py-10 text-slate-400">لا توجد إعلانات - كن أول من ينشر!</p>';
+}
+function renderMy(){
+  if(!user) return;
+  let my=ads.filter(a=>a.ownerPhone===user.phone);
+  document.getElementById('myCount').textContent=my.length;
+  document.getElementById('myAdsGrid').innerHTML=my.map(a=>`<div class="bg-white rounded-2xl overflow-hidden border">${getCardImage(a)}<div class="p-3"><h3 class="font-bold text-sm">${a.title}</h3><p class="text-teal-600 font-extrabold">${(a.price||0).toLocaleString()} ر.س</p><p class="text-xs text-slate-400">${a.neighborhood||''}</p><button onclick="delAd('${a.id}')" class="w-full bg-red-50 text-red-600 py-2 rounded-full text-sm mt-2 font-bold">حذف</button></div></div>`).join('') || '<p class="col-span-full text-center py-10 text-slate-400 bg-white rounded-2xl">لسه ماعندكش إعلانات</p>';
+}
+async function delAd(id){ if(!confirm('تحذف الإعلان؟')) return; await db.collection("ads").doc(id).delete(); }
+async function addAd(){
+  try{
+    let t=document.getElementById('fTitle').value.trim(); if(!t) return alert('اكتب عنوان الإعلان');
+    await db.collection("ads").add({title:t, price:+document.getElementById('fPrice').value||0, cat:document.getElementById('fCat').value, city:document.getElementById('fCity').value||'الرياض', neighborhood:document.getElementById('fNeighborhood').value||'', image:selectedImage||'', desc:document.getElementById('fDesc').value, ownerName:user.name, ownerPhone:user.phone, createdAt: Date.now()});
+    selectedImage=""; document.getElementById('fTitle').value=""; document.getElementById('fPrice').value=""; document.getElementById('fNeighborhood').value=""; document.getElementById('fDesc').value=""; document.getElementById('imgPreview').classList.add('hidden');
+    closeAdd(); showPage('mystore'); alert('تم نشر إعلانك للكل! 🎉');
+  }catch(e){ alert('خطأ في النشر: ' + e.message); }
+}
+updateAuthUI();
+</script>
+</body>
+</html>
